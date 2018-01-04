@@ -1,0 +1,36 @@
+.user-navbar{
+    margin: 0;
+}
+
+.play-navbar{
+    margin-bottom: 1rem;
+}
+
+/* ICONS */
+
+#gambling-logo{
+    background-repeat: no-repeat;
+    background-image: url('icons/gambling-logo.png');
+}
+
+.icon{
+}
+
+.icon:hover{
+    padding: 5px;
+}
+
+#roulette-icon{
+    background-repeat: no-repeat;
+    background-image: url('icons/roulette-icon.png');
+}
+
+#onevsone-icon{
+    background-repeat: no-repeat;
+    background-image: url('icons/1vs1-icon.png');
+}
+
+#dice-icon{
+    background-repeat: no-repeat;
+    background-image: url('icons/dice-icon.png');
+}

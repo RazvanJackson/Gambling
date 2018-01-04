@@ -1,0 +1,83 @@
+<% include ./components/header.ejs %>
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+<div class="columns" id="roulette-app">
+    <div class="column">
+
+    </div>
+    <div class="column is-9 ">
+        <div class="timer">{{timerMessage}}</div>
+            <div class="columns">
+                <div class="column">
+                    <input class="input" name="amount" type="text" value="0" v-model="amount">
+                </div>
+                <div class="column">
+                    <button class="button"><span>X*2</span></button>
+                </div>
+                <div class="column">
+                    <button class="button"><span>X/2</span></button>
+                </div>
+                <div class="column">
+                    <button class="button"><span>Clear</span></button>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <button type="submit" name="bet-option" class="button is-danger" value="red"  @click.self.prevent="Bet($event)"><span>Red</span></button>
+                </div>
+                <div class="column">
+                    <button type="submit" name="bet-option" class="button is-success" value="green"  @click.self.prevent="Bet($event)"><span>Green</span></button>
+                </div>
+                <div class="column">
+                    <button type="submit" name="bet-option" class="button is-black" value="black"  @click.self.prevent="Bet($event)"><span>Black</span></button>
+                </div>
+            </div>
+            <input type="hidden" name='details'>
+    </div>
+</div>
+
+<% include ./components/footer.ejs %>
+<script>
+    var socket= io('http://localhost:3000');
+    const app = new Vue({
+    el: '#roulette-app',
+    data:{
+        
+
+        timerMessage:null,
+        timer: null,
+
+        amount:null
+    },
+    methods:{
+        Bet(){
+            let choosenColor = event.target.value;
+            socket.emit('bet', {foo:'boo'});
+        },
+    },
+
+    mounted(){
+        socket.on('sendData', function(data){
+        app.timer = data.timer;
+        app.timerMessage = data.timerMessage;
+        });
+    },
+});
+
+</script>
+
+<style scoped>
+    button{
+        width:100%;
+    }
+    form{
+        width: 100%;
+    }
+
+    .timer{
+        text-align: center;
+        margin-bottom: 10px;
+    }
+</style>

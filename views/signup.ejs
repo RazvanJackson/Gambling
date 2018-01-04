@@ -1,0 +1,161 @@
+<% include ./components/header.ejs %>
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+<div class="columns" id="register-app">
+    <div class="column is-8 is-offset-2">
+        <div class="box is-clearfix">
+            <form action="/user/signup" method="POST">
+                <!-- Email field-->
+                <div class="field">
+                    <label class="label" for="email">Email</label>
+                    <div class="control">
+                        <input class="input" type="text" name="email" index="0" v-model="email" @input="checkEmail()">
+                    </div>
+                    <p class="help is-danger email-help" v-if="helpEmail != 'null'">{{helpEmail}}</p>
+                </div>
+
+                <!-- Username field-->
+                <div class="field">
+                    <label class="label" for="username">Username</label>
+                    <div class="control">
+                        <input class="input" type="text" name="username" index="1" v-model="username" @input="checkUsername()">
+                    </div>
+                    <p class="help is-danger username-help" v-if="helpUsername != 'null'">{{helpUsername}}</p>
+                </div>
+
+                <!-- Password field-->
+                <div class="field">
+                    <label class="label" for="username">Password</label>
+                    <div class="control">
+                        <input class="input" type="password" name="password" index="2" v-model="password" @input="checkConfirmPassword()">
+                    </div>
+                    <p class="help is-danger pasword-help" v-if="helpPassword != 'null'">{{helpPassword}}</p>
+                </div>
+
+                <!-- Confirm Password field-->
+                <div class="field">
+                    <label class="label" for="username">Confirm Password</label>
+                    <div class="control">
+                        <input class="input" type="password" name="confirmpassword" index="3" v-model="confirmpassword" @input="checkConfirmPassword()">
+                    </div>
+                    <p class="help is-danger confirmpassword-help" v-if="helpConfirmPassword != 'null'">{{helpConfirmPassword}}</p>
+                </div>
+
+                <!-- SignUp button field-->
+                <div class="field">
+                    <button class="button is-primary" type="submit" @click.self.prevent="submitUser()">SignUp</button>
+                </div>
+            </form>
+            <h1 id='submit-message' v-if="helpSubmit != null">{{helpSubmit}}</h1>
+        </div>
+    </div>
+</div>
+
+<script>
+    const app = new Vue({
+    el: '#register-app',
+    data: {
+        email: undefined,
+        username: undefined,
+        password: undefined,
+        confirmpassword: undefined,
+
+        helpEmail: undefined,
+        helpUsername: undefined,
+        helpPassword: undefined,
+        helpConfirmPassword: undefined,
+
+        helpSubmit: undefined,
+        
+        disableBtn: true
+    },
+    methods:{
+        checkEmail(){
+            if(app.email == '') app.helpEmail = null;
+            else{
+                $.post('/user/signup',{
+                    email:this.email
+                },function(data){
+                    if(data.error == true){
+                        app.helpEmail = data.message;
+                        $('.email-help').removeClass('is-primary').addClass('is-danger');
+                    } 
+                else{
+                    app.helpEmail = data.message;
+                    $('.email-help').removeClass('is-danger').addClass('is-primary');
+                } 
+                });
+            }
+        },
+        checkUsername(){
+            if(app.username == '') app.helpUsername = null;
+            else{
+                $.post('/user/signup',{
+                    username:this.username
+                },function(data){
+                if(data.error == true){
+                    app.helpUsername = data.message;
+                    $('.username-help').removeClass('is-primary').addClass('is-danger');
+
+                } 
+                else{
+                    app.helpUsername = data.message;
+                    $('.username-help').removeClass('is-danger').addClass('is-primary');
+                }
+                });
+            }
+        },
+        checkPassword(){
+            $.post('/user/signup',{
+                password: this.password
+            },function(data){
+                if(data.error == true){
+                    app.helpPassword = data.message;
+                    $('.password-help').removeClass('is-primary').addClass('is-danger');
+
+                } 
+                else{
+                    app.helpPassword = data.message;
+                    $('.password-help').removeClass('is-danger').addClass('is-primary');
+                } 
+             });
+        },
+        checkConfirmPassword(){
+            $.post('/user/signup',{
+                password: this.password,
+                confirmpassword: this.confirmpassword
+            },function(data){
+                if(data.error == true){
+                    app.helpConfirmPassword = data.message;
+                    $('.confirmpassword-help').removeClass('is-primary').addClass('is-danger');
+
+                } 
+                else{
+                    app.helpConfirmPassword = data.message;
+                    $('.confirmpassword-help').removeClass('is-danger').addClass('is-primary');
+                } 
+             });
+        },
+        submitUser(){
+            $.post('/user/signup',{
+                username: this.username,
+                email: this.email,
+                password: this.password,
+                confirmpassword: this.confirmpassword
+            },function(data){
+                if(data.error == true){
+                    console.log(data);
+                    app.helpSubmit = data.message;
+
+                } 
+                else{
+                    app.helpSubmit = data.message;
+                } 
+             });    
+        },
+    }
+});
+</script>
+
+<% include ./components/footer.ejs %>
