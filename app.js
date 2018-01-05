@@ -8,9 +8,12 @@ const expressValidator = require('express-validator');
 
 const app = express();
 
-// Server
-const server = require('http').createServer(app);
+//DBs
+const rouletteDB = require('./model/roulette');
+const userDB = require('./model/user');
 
+// Server
+var server = app.listen(3000);
 // Socket.io
 const io = require('socket.io')(server);
 
@@ -31,8 +34,8 @@ app.use(cookieParser("everythingistopsecret"));
 app.use(passport.initialize());
 app.use(passport.session());
 
+let user;
 //Locals //
-var user;
 app.use(function(req,res,next){
     app.locals.user = req.user;
     user = req.user;
@@ -40,42 +43,107 @@ app.use(function(req,res,next){
 });
 
 // Timer
-var myRoulette = io.of('/my-roulette');
-
+let rouletteID = 0;
 let timer = 15;
 let activePlayers = [];
 let timerMessage;
 
+let winningNumber;
+let winningColor;
+
+let rouletteSaving;
+
 function chooseNumber(){
-    let winningNumber = Math.floor(Math.random()*14);
+    winningNumber = Math.floor(Math.random()*14);
+
+    if(winningNumber == 0) winningColor = 'green';
+    else if(winningNumber < 8 && winningNumber > 0) winningColor = 'red';
+    else if(winningNumber > 7 && winningNumber < 15) winningColor = 'black';
+
     timerMessage = 'Winning number:' + winningNumber;
+    
 }
 
-function clearTimer(){
+function clearData(){
     timer = 15;
     activePlayers = [];
+
 }
 
+function EndOfTurn(){
+
+    rouletteSaving = new rouletteDB({
+        rouletteID: rouletteID,
+        players: activePlayers,
+        winningNumber: winningNumber,
+        winningColor: winningColor
+    });
+
+    rouletteSaving.save(function(err){
+        if(err) console.log(err);
+    });
+
+    if(activePlayers.length>0){
+        activePlayers.forEach(function(player){
+            if(player.choosenColor == winningColor){
+                userDB.findOne({_id:player.userID}, function(err,user){
+                    if(winningColor == 'red' || winningColor == 'black') user.balance += player.amount*2; 
+                    else if(winningColor == 'green') user.balance += player.amount*14;
+                    user.save();
+                });
+            }
+            clearData();
+        });
+    }
+    else{
+        clearData();
+    }
+    
+
+    rouletteID++;
+}
+
+let sockets = [];
 function handleInterval(){
     if(timer>0) timerMessage = 'Time left:'+timer;
-    if(timer == -10) clearTimer();
+    if(timer == -10) EndOfTurn();
     else if(timer == -5) chooseNumber();
     else if(timer == 0) timerMessage = 'Rolling';
-    io.emit('sendData',{timer:timer, timerMessage:timerMessage});
-    timer --;
+    sockets.forEach(function(socket){
+        socket.emit('sendData', {timer:timer, timerMessage:timerMessage});
+    });
+    timer--;
 }
+handleInterval();
+setInterval(handleInterval,1000);
 
+var myRoulette = io.of('/my-roulette');
+myRoulette.on('connect', function (socket) {
+    sockets.push(socket);
+    
+    socket.on('bet', function(data){
+        if(timer>0){
+            userDB.findOne({_id:user._id}, function(err,user){
+                if(err) console.log(err);
+                else if(user.balance<data.amount) console.log("Not enough money");
+                else if(user && user.balance>data.amount){
+                    let newPlayer = {
+                        userID: user.id,
+                        username: user.username,
+                        amount: data.amount,
+                        choosenColor: data.choosenColor
+                    }
+                    activePlayers.push(newPlayer);
+                    user.balance -= data.amount;
+                    user.save();
+                }
+            });
 
+            
+        }
+    });
+});
 
-    myRoulette.on('connect', function(socket) {
-        socket.on('bet', function(data) {
-          console.log(data);
-        });
-      });
-var interval = setInterval(handleInterval,1000);
+         
 //Routes
 app.use('/', indexRouter);
-
-server.listen(3000, function(){
-    myRoulette.emit('connection');
-});

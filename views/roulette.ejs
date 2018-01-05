@@ -25,13 +25,13 @@
             </div>
             <div class="columns">
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-danger" value="red"  @click.self.prevent="Bet($event)"><span>Red</span></button>
+                    <button type="submit" name="bet-option" class="button is-danger" value="red" :disabled="!activeBetting"  @click.self.prevent="Bet($event)"><span>Red</span></button>
                 </div>
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-success" value="green"  @click.self.prevent="Bet($event)"><span>Green</span></button>
+                    <button type="submit" name="bet-option" class="button is-success" value="green" :disabled="!activeBetting" @click.self.prevent="Bet($event)"><span>Green</span></button>
                 </div>
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-black" value="black"  @click.self.prevent="Bet($event)"><span>Black</span></button>
+                    <button type="submit" name="bet-option" class="button is-black" value="black" :disabled="!activeBetting"  @click.self.prevent="Bet($event)"><span>Black</span></button>
                 </div>
             </div>
             <input type="hidden" name='details'>
@@ -40,28 +40,38 @@
 
 <% include ./components/footer.ejs %>
 <script>
-    var socket= io('http://localhost:3000');
+    var myRoulette = io('http://localhost:3000/my-roulette', {forceNew: false});
+
+    
     const app = new Vue({
     el: '#roulette-app',
     data:{
-        
-
         timerMessage:null,
         timer: null,
 
-        amount:null
+        amount:null,
+
+        activeBetting: undefined
     },
     methods:{
         Bet(){
             let choosenColor = event.target.value;
-            socket.emit('bet', {foo:'boo'});
+            if(app.timer>=0){
+                myRoulette.emit('bet', {choosenColor: choosenColor, amount:app.amount});
+            }
         },
+    },
+    watch:{
+        timer(){
+            if(app.timer>=0) app.activeBetting = true;
+            else app.activeBetting = false;
+        }
     },
 
     mounted(){
-        socket.on('sendData', function(data){
-        app.timer = data.timer;
-        app.timerMessage = data.timerMessage;
+        myRoulette.on('sendData', function(data){
+            app.timer = data.timer;
+            app.timerMessage = data.timerMessage;
         });
     },
 });

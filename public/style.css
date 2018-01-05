@@ -8,29 +8,35 @@
 
 /* ICONS */
 
-#gambling-logo{
-    background-repeat: no-repeat;
-    background-image: url('icons/gambling-logo.png');
-}
-
 .icon{
-}
-
-.icon:hover{
-    padding: 5px;
+    padding: 15px;
+    margin-left: 5px;
 }
 
 #roulette-icon{
     background-repeat: no-repeat;
     background-image: url('icons/roulette-icon.png');
+    background-position: center;
+    
+}
+#roulette-icon:hover{
+    border: 0.5px solid #d51d2a;
 }
 
 #onevsone-icon{
     background-repeat: no-repeat;
     background-image: url('icons/1vs1-icon.png');
+    background-position: center;
+}
+#onevsone-icon:hover{
+    border: 0.5px solid #a72b6b;
 }
 
 #dice-icon{
     background-repeat: no-repeat;
     background-image: url('icons/dice-icon.png');
+    background-position: center;
+}
+#dice-icon:hover{
+    border: 0.5px solid #60bc39;
 }
