@@ -9,7 +9,7 @@ class Play{
     }
 
     static rouletteTimer(){
-        
+        setInterval(function(){console.log('boo')},1000);
     }
 
     static rouletteSaveGame(req,res){

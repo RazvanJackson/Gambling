@@ -40,3 +40,33 @@
 #dice-icon:hover{
     border: 0.5px solid #60bc39;
 }
+
+/* ROULETTE */
+
+.winner{
+    width:2px;
+    height: 100%;
+    background-color: rgb(128, 224, 18);
+    margin: 0px auto;
+}
+
+
+#roulette{
+    margin-bottom: 10px;
+    height: 75px;
+    background-image: url('/icons/roulette.png');
+}
+
+
+.roulette-spin{
+    --spin: 0px;
+    animation-name: spin;
+    animation-duration: 5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes spin{
+    0% {background-position:-525px 0%}
+    100% {background-position:var(--spin) 0%}
+}

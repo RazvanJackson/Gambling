@@ -44,7 +44,7 @@ app.use(function(req,res,next){
 
 // Timer
 let rouletteID = 0;
-let timer = 15;
+let timer = 16;
 let activePlayers = [];
 let timerMessage;
 
@@ -53,19 +53,24 @@ let winningColor;
 
 let rouletteSaving;
 
+let sockets = [];
+
 function chooseNumber(){
     winningNumber = Math.floor(Math.random()*14);
 
     if(winningNumber == 0) winningColor = 'green';
     else if(winningNumber < 8 && winningNumber > 0) winningColor = 'red';
     else if(winningNumber > 7 && winningNumber < 15) winningColor = 'black';
+    timerMessage = 'Rolling!';
 
-    timerMessage = 'Winning number:' + winningNumber;
-    
+    sockets.forEach(function(socket){
+        socket.emit('winningNumber', {winningNumber:winningNumber});
+    });
+
 }
 
 function clearData(){
-    timer = 15;
+    timer = 16;
     activePlayers = [];
 
 }
@@ -103,12 +108,11 @@ function EndOfTurn(){
     rouletteID++;
 }
 
-let sockets = [];
 function handleInterval(){
     if(timer>0) timerMessage = 'Time left:'+timer;
     if(timer == -10) EndOfTurn();
-    else if(timer == -5) chooseNumber();
-    else if(timer == 0) timerMessage = 'Rolling';
+    else if(timer == -5) timerMessage = 'Winning number: '+winningNumber;
+    else if(timer == 0) chooseNumber();
     sockets.forEach(function(socket){
         socket.emit('sendData', {timer:timer, timerMessage:timerMessage});
     });
@@ -120,13 +124,15 @@ setInterval(handleInterval,1000);
 var myRoulette = io.of('/my-roulette');
 myRoulette.on('connect', function (socket) {
     sockets.push(socket);
-    
+
+    socket.emit('getPlayers', {activePlayers:activePlayers});
+
     socket.on('bet', function(data){
         if(timer>0){
             userDB.findOne({_id:user._id}, function(err,user){
                 if(err) console.log(err);
                 else if(user.balance<data.amount) console.log("Not enough money");
-                else if(user && user.balance>data.amount){
+                else if(user && user.balance>=data.amount){
                     let newPlayer = {
                         userID: user.id,
                         username: user.username,
@@ -135,11 +141,12 @@ myRoulette.on('connect', function (socket) {
                     }
                     activePlayers.push(newPlayer);
                     user.balance -= data.amount;
-                    user.save();
+                    user.save(function(err){
+                        if(err) console.log(err);
+                        socket.emit('sendPlayer', {newPlayer:newPlayer});
+                    });
                 }
             });
-
-            
         }
     });
 });
