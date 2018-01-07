@@ -61,7 +61,7 @@ function chooseNumber(){
     if(winningNumber == 0) winningColor = 'green';
     else if(winningNumber < 8 && winningNumber > 0) winningColor = 'red';
     else if(winningNumber > 7 && winningNumber < 15) winningColor = 'black';
-    timerMessage = 'Rolling!';
+    timerMessage = 'Rolling';
 
     sockets.forEach(function(socket){
         socket.emit('winningNumber', {winningNumber:winningNumber});

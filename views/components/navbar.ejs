@@ -27,15 +27,15 @@
         <div class="navbar-end">
         <% if(!user){ %> 
             <a href="/user/login" class="navbar-item">
-                <span>Login</span>
+                <span class="navbar-user">Login</span>
             </a>
             <a href="/user/signup" class="navbar-item">
-                <span>SignUp</span>
+                <span class="navbar-user">SignUp</span>
             </a>
         <% }else{ %>
-            <span class="navbar-item">$<%=user.balance %></span>
+            <div class="navbar-item"><span class="navbar-user"><%=user.balance %></span></div>
             <a href="/user/myaccount" class="navbar-item">
-                <span><%=user.username %></span>
+                <span class="navbar-user"><%=user.username %></span>
             </a>
         <% } %>
         </div>

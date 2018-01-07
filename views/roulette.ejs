@@ -12,38 +12,38 @@
         <div id="roulette"><div class="winner"></div></div>
             <div class="columns">
                 <div class="column">
-                    <input class="input" name="amount" type="text" value="0" v-model="amount">
+                    <input class="input" id="amount" name="amount" type="text" value="0" v-model="amount">
                 </div>
                 <div class="column">
-                    <button class="button"><span>X*2</span></button>
+                    <button type="button" class="button" id="x2"><span>X*2</span></button>
                 </div>
                 <div class="column">
-                    <button class="button"><span>X/2</span></button>
+                    <button type="button" class="button" id="div2"><span>X/2</span></button>
                 </div>
                 <div class="column">
-                    <button class="button"><span>Clear</span></button>
+                    <button type="button" class="button" id="clear"><span>Clear</span></button>
                 </div>
             </div>
             <div class="columns">
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-danger" value="red" :disabled="!activeBetting"  @click.self.prevent="Bet($event)"><span>Red</span></button>
-                    <div class="active-players columns box">
-                        <div class="column red-players-username-box"></div>
-                        <div class="column red-players-amount-box"></div>
+                    <button type="submit" name="bet-option" class="button is-danger" value="red" :disabled="!activeBetting"  @click="Bet($event)"><span>Red</span></button>
+                    <div class="active-players box">
+                        <div class="red-players-username-box"></div>
+                        <div class="red-players-amount-box"></div>
                     </div>
                 </div>
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-success" value="green" :disabled="!activeBetting" @click.self.prevent="Bet($event)"><span>Green</span></button>
-                    <div class="active-players columns box">
-                        <div class="column green-players-username-box"></div>
-                        <div class="column green-players-amount-box"></div>
+                    <button type="submit" name="bet-option" class="button is-success" value="green" :disabled="!activeBetting" @click="Bet($event)"><span>Green</span></button>
+                    <div class="active-players">
+                        <div class="green-players-username-box"></div>
+                        <div class="green-players-amount-box"></div>
                     </div>
                 </div>
                 <div class="column">
-                    <button type="submit" name="bet-option" class="button is-black" value="black" :disabled="!activeBetting"  @click.self.prevent="Bet($event)"><span>Black</span></button>
-                    <div class="active-players columns box">
-                        <div class="column black-players-username-box"></div>
-                        <div class="column black-players-amount-box"></div>
+                    <button type="submit" name="bet-option" class="button is-black" value="black" :disabled="!activeBetting"  @click="Bet($event)"><span>Black</span></button>
+                    <div class="active-players">
+                        <div class="black-players-username-box"></div>
+                        <div class="black-players-amount-box"></div>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
         timerMessage:null,
         timer: null,
 
-        amount:null,
+        amount:0,
 
         activePlayers: [],
 
@@ -106,15 +106,21 @@
 
             if(positiveNumbers.includes(winningNumber)){
                 let posHelper = positiveNumbers.indexOf(winningNumber) * 75;
-                $roulette.css({'background-position-x': 0});
                 $roulette.addClass('roulette-spin');
                 $roulette.css({'--spin': posHelper + (1125 * 8)});
+                setTimeout(function(){
+                    $roulette.css({'background-position-x': posHelper});
+                    $roulette.removeClass('roulette-spin');
+                },5000);
             }
             else if(negativeNumbers.includes(winningNumber)){
                 let posHelper = negativeNumbers.indexOf(winningNumber) * 75 * -1;
-                $roulette.css({'background-position-x': 0});
                 $roulette.addClass('roulette-spin');
-                $roulette.css({'--spin': -75 + posHelper - (1125 * 8)})
+                $roulette.css({'--spin': -75 + posHelper - (1125 * 8)});
+                setTimeout(function(){
+                    $roulette.css({'background-position-x': -75 + posHelper});
+                    $roulette.removeClass('roulette-spin');
+                },5000);
             }
         },
 
@@ -129,15 +135,15 @@
 
         newPlayer(data){
             console.log(data);
-            $('.'+data.newPlayer.choosenColor+'-players-username-box').append('<p class="username">'+data.newPlayer.username+'</p>');
-            $('.'+data.newPlayer.choosenColor+'-players-amount-box').append('<p class="amount">'+data.newPlayer.amount+'</p>');
+            $('.'+data.newPlayer.choosenColor+'-players-username-box').append('<span class="username">'+data.newPlayer.username+'</span>');
+            $('.'+data.newPlayer.choosenColor+'-players-amount-box').append('<span class="amount">'+data.newPlayer.amount+'</span>');
         },
 
         onMountPlayers(){
             if(this.activePlayers.length>0){
                 this.activePlayers.forEach(function(activePlayer){
-                    $('.'+activePlayer.choosenColor+'-players-username-box').append('<p class="username">'+activePlayer.username+'</p>');
-                    $('.'+activePlayer.choosenColor+'-players-amount-box').append('<p class="amount">'+activePlayer.amount+'</p>');
+                    $('.'+activePlayer.choosenColor+'-players-username-box').append('<span class="username">'+activePlayer.username+'</span>');
+                    $('.'+activePlayer.choosenColor+'-players-amount-box').append('<span class="amount">'+activePlayer.amount+'</span>');
                 });
             }
         }
@@ -155,10 +161,12 @@
     },
 
     mounted(){
+        let activePlayers = this.activePlayers;
 
         myRoulette.on('sendPlayer', function(data){
+            console.log(activePlayers);
             app.newPlayer(data);
-            $('.active-players').show();
+            if(activePlayers.length==0) $('.active-players').show();
         });
 
         myRoulette.on('getPlayers', function(data){
@@ -196,16 +204,4 @@
         text-align: center;
         margin-bottom: 10px;
     }
-    .box{
-        margin-top: 10px;
-    }
-    
-    p.amount{
-        margin: 0px;
-        float: right;
-    }
-    p.username{
-        float: left;
-    }
-
 </style>

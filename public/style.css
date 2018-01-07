@@ -1,45 +1,89 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald|Quattrocento');
+
+*{
+    font-family: 'Quattrocento', serif;
+}
+
+/* NAVBAR */
+
+.navbar-user{
+    padding: 5px;
+    color: black;
+    background: linear-gradient(to right, rgb(252, 232, 122), #998100);
+    border-radius: 5px;
+}
+
+/*GAMES NAVBAR*/
+
+#navbar-roulette{
+    transition: .25s;
+    padding: 5px;
+    color: white;
+    background-color: #d51d2a;
+    border-radius: 5px;
+}
+
+#navbar-roulette:hover{
+    transition: .25s;
+    background-color: #aa1721;
+}
+
+#navbar-versus{
+    padding: 5px;
+    color: white;
+    background-color: #a72b6b;
+    border-radius: 5px;
+}
+
+#navbar-versus:hover{
+    transition: .25s;
+    background-color: #852255;
+}
+
+#navbar-dices{
+    padding: 5px;
+    color: white;
+    background-color: #60bc39;
+    border-radius: 5px;
+}
+
+#navbar-dices:hover{
+    transition: .25s;
+    background-color: #4C962D;
+}
+
+/* NAVBARS */
 .user-navbar{
     margin: 0;
+    font-family: 
 }
 
 .play-navbar{
     margin-bottom: 1rem;
 }
 
-/* ICONS */
+/* INDEX */
 
-.icon{
-    padding: 15px;
-    margin-left: 5px;
-}
-
-#roulette-icon{
-    background-repeat: no-repeat;
-    background-image: url('icons/roulette-icon.png');
-    background-position: center;
-    
-}
-#roulette-icon:hover{
-    border: 0.5px solid #d51d2a;
+.title{
+    text-align: center;
 }
 
-#onevsone-icon{
-    background-repeat: no-repeat;
-    background-image: url('icons/1vs1-icon.png');
-    background-position: center;
-}
-#onevsone-icon:hover{
-    border: 0.5px solid #a72b6b;
+.roulette{
+    background-color:#d51d2a;
 }
 
-#dice-icon{
-    background-repeat: no-repeat;
-    background-image: url('icons/dice-icon.png');
-    background-position: center;
+.versus{
+    background-color:#a72b6b;
 }
-#dice-icon:hover{
-    border: 0.5px solid #60bc39;
+
+.dices{
+    background-color:#60bc39;
 }
+
+.roulette *, .versus *, .dices *{
+    color: white;
+}
+
 
 /* ROULETTE */
 
@@ -63,10 +107,10 @@
     animation-name: spin;
     animation-duration: 5s;
     animation-iteration-count: 1;
-    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
 }
 
 @keyframes spin{
-    0% {background-position:-525px 0%}
+    0% {background-position:0px 0%}
     100% {background-position:var(--spin) 0%}
 }
