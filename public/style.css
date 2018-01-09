@@ -4,52 +4,64 @@
     font-family: 'Quattrocento', serif;
 }
 
+span{
+    width: 100px;
+    text-align: center;
+}
+
 /* NAVBAR */
 
 .navbar-user{
+    transition: 3s;
     padding: 5px;
-    color: black;
-    background: linear-gradient(to right, rgb(252, 232, 122), #998100);
+    color: white;
+    background: linear-gradient(to right, #ffd700, #998100);
+    border-radius: 5px;
+}
+.navbar-user:hover{
+    transition: 3s;
+    padding: 5px;
+    color: white;
+    background: linear-gradient(to right, #998100, #ffd700);
     border-radius: 5px;
 }
 
 /*GAMES NAVBAR*/
 
 #navbar-roulette{
-    transition: .25s;
     padding: 5px;
     color: white;
-    background-color: #d51d2a;
+    background: linear-gradient(to right, #d51d2a, #7f1119);
     border-radius: 5px;
 }
 
 #navbar-roulette:hover{
-    transition: .25s;
-    background-color: #aa1721;
+    color: white;
+    background: linear-gradient(to right, #7f1119, #d51d2a);
 }
 
 #navbar-versus{
     padding: 5px;
     color: white;
-    background-color: #a72b6b;
+    background: linear-gradient(to right, #a72b6b, #641940);
     border-radius: 5px;
 }
 
 #navbar-versus:hover{
-    transition: .25s;
-    background-color: #852255;
+    color: white;
+    background: linear-gradient(to right, #641940, #a72b6b);
 }
 
 #navbar-dices{
     padding: 5px;
     color: white;
-    background-color: #60bc39;
+    background: linear-gradient(to right, #60bc39, #397022);
     border-radius: 5px;
 }
 
 #navbar-dices:hover{
-    transition: .25s;
-    background-color: #4C962D;
+    color: white;
+    background: linear-gradient(to right, #397022, #60bc39);
 }
 
 /* NAVBARS */
@@ -82,6 +94,32 @@
 
 .roulette *, .versus *, .dices *{
     color: white;
+}
+
+/* LOGIN */
+.login-button{
+    color: white;
+    background: linear-gradient(to right, #ffd700, #998100);
+    border-radius: 5px;
+}
+
+.login-button:hover{
+    color: white;
+    background: linear-gradient(to right, #998100, #ffd700);
+    border-radius: 5px;
+}
+
+/* SIGNUP */
+.signup-button{
+    color: white;
+    background: linear-gradient(to right, #ffd700, #998100);
+    border-radius: 5px;
+}
+
+.signup-button:hover{
+    color: white;
+    background: linear-gradient(to right, #998100, #ffd700);
+    border-radius: 5px;
 }
 
 
