@@ -1,0 +1,131 @@
+<% include ./components/header.ejs %>
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+<div class="columns" id="dices-app">
+    <div class="column">
+        
+    </div>
+
+    <div class="column is-9">
+        <div>{{message}}</div>
+        <div class="columns">
+            <div class="column">
+                <input class="input" id="amount" name="amount" type="text" v-model="amount">
+            </div>
+            <div class="column">
+                <button type="button" class="button" id="x2"><span>X*2</span></button>
+            </div>
+            <div class="column">
+                <button type="button" class="button" id="div2"><span>X/2</span></button>
+            </div>
+            <div class="column">
+                <button type="button" class="button" id="clear"><span>Clear</span></button>
+            </div>
+        </div>
+            <div class="columns">
+                <div class="column">
+                    <button class="button" id="btn-1" value="1" @click="Bet($event)">1</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-2" value="2" @click="Bet($event)">2</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-3" value="3" @click="Bet($event)">3</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-4"value="4" @click="Bet($event)">4</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-5" value="5" @click="Bet($event)">5</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-6" value="6" @click="Bet($event)">6</button>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <button class="button" id="btn-low" value="low" @click="Bet($event)">Low [1 to 3]</button>
+                </div>
+                <div class="column">
+                    <button class="button" id="btn-high" value="high" @click="Bet($event)">High [4 to 6]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ./components/footer.ejs %>
+
+<script>
+    var myDices = io('http://localhost:3000/my-dices', {forceNew: false});
+
+    const app = new Vue({
+        el: '#dices-app',
+        data:{
+            message: 'Waiting',
+            amount: 0,
+        },
+        methods:{
+            Bet(event){
+                myDices.emit('bet', {amount: app.amount,option: event.target.value});
+            }
+        },
+        mounted(){
+            myDices.on('message', function(message){
+                app.message = message;
+            });
+        }
+    });
+</script>
+
+
+<style scoped>
+    .box{
+        margin-top: 10px;
+    }
+
+    .button{
+        width:100%;
+    }
+
+    #btn-1{
+        color: white;
+        background: #60bc39;
+    }
+
+    #btn-2{
+        color: white;
+        background: #60bc39;
+    }
+
+    #btn-3{
+        color: white;
+        background: #60bc39;
+    }
+
+    #btn-4{
+        color: white;
+        background: #9539bc;
+    }
+
+    #btn-5{
+        color: white;
+        background: #9539bc;
+    }
+
+    #btn-6{
+        color: white;
+        background: #9539bc;
+    }
+
+    #btn-low{
+        color: white;
+        background: #60bc39;
+    }
+    #btn-high{
+        color: white;
+        background: #9539bc;
+    }
+</style>

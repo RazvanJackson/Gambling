@@ -67,7 +67,6 @@ span{
 /* NAVBARS */
 .user-navbar{
     margin: 0;
-    font-family: 
 }
 
 .play-navbar{
@@ -85,7 +84,10 @@ span{
 }
 
 .versus{
-    background-color:#a72b6b;
+    height: 50%;
+    background-image: url('/icons/versus-background.jpg');
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 .dices{

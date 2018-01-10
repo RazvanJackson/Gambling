@@ -15,11 +15,13 @@ const userDB = require('./model/user');
 // Server
 var server = app.listen(3000);
 // Socket.io
-const io = require('socket.io')(server);
+global.io = require('socket.io')(server);
 
 // Require routers
 const indexRouter = require('./routes/index');
 const RouletteController = require('./Controller/Roulette');
+const DicesController = require('./Controller/Dices');
+
 
 // Local-login
 require("./passport-config/local");
@@ -35,7 +37,7 @@ app.use(cookieParser("everythingistopsecret"));
 app.use(passport.initialize());
 app.use(passport.session());
 
-var user;
+global.user;
 //Locals //
 app.use(function(req,res,next){
     app.locals.user = req.user;
@@ -43,9 +45,9 @@ app.use(function(req,res,next){
     next();
 });
 
-// Roulette
-
-RouletteController.Play(io);
+//games
+RouletteController.Play();
+DicesController.Play();
 
 //Routes
 app.use('/', indexRouter);

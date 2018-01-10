@@ -2,19 +2,19 @@ const userDB = require('../model/user');
 const rouletteDB = require('../model/roulette');
 
 
-class Play{
+class Roulette{
     
     static roulettePage(req,res){
         res.render('roulette');
     }
 
 
-    static Play(io){
-        io.on('user-connected', function(data){
-            console.log('123');
+    static Play(){
+        let rouletteID;
+        rouletteDB.find({}, function(err,data){
+            rouletteID = data.length;
         });
 
-        let rouletteID = 0;
         let timer = 16;
         let timerMessage;
 
@@ -29,7 +29,7 @@ class Play{
         let sockets = [];
 
         function chooseNumber(){
-            winningNumber = Math.floor(Math.random()*14);
+            winningNumber = Math.floor(Math.random()*15);
 
             if(winningNumber == 0) winningColor = 'green';
             else if(winningNumber < 8 && winningNumber > 0) winningColor = 'red';
@@ -43,7 +43,7 @@ class Play{
         }
 
         function clearData(){
-            timer = 16;
+            timer = 15;
             bets = [];
         }
 
@@ -68,8 +68,7 @@ class Play{
                             userDB.findOne({_id:player.id}, function(err,user){
                                 if(winningColor == 'red' || winningColor == 'black'){
                                     user.balance += bet.amount*2; 
-                                    user.save(function(){
-                                    });
+                                    user.save();
                                 } 
                                 else if(winningColor == 'green'){
                                     user.balance += bet.amount*14;
@@ -89,22 +88,25 @@ class Play{
             rouletteID++;
         }
 
-        function handleInterval(){
+        function Timer(){
             if(timer>0) timerMessage = 'Time left:'+timer;
-            if(timer == -10) EndOfTurn();
-            else if(timer == -5) timerMessage = 'Winning number: '+winningNumber;
-            else if(timer == 0) chooseNumber();
-            sockets.forEach(function(socket){
-                socket.emit('sendData', {timer:timer, timerMessage:timerMessage});
-            });
-            timer--;
+                if(timer == -10) EndOfTurn();
+                else if(timer == -5) timerMessage = 'Winning number: '+winningNumber;
+                else if(timer == 0) chooseNumber();
+            timer --;
         }
-        handleInterval();
-        setInterval(handleInterval,1000);
-        
+        Timer();
+        setInterval(Timer,1000);
+
         var myRoulette = io.of('/my-roulette');
 
         myRoulette.on('connect', function (socket) {
+
+            function sendData(){
+                    myRoulette.emit('sendData', {timer:timer, timerMessage:timerMessage});
+            }
+            sendData();
+            setInterval(sendData,1000);
 
             sockets.push(socket);
             socket.emit('getBets', {bets:bets});
@@ -124,9 +126,7 @@ class Play{
                             user.balance -= data.amount;
                             user.save(function(err){
                                 if(err) console.log(err);
-                                sockets.forEach(function(socket){
-                                    socket.emit('sendBet', {newBet:newBet});
-                                });
+                                else myRoulette.emit('sendBet', {newBet:newBet});
                             });
                         }
                     });
@@ -167,12 +167,8 @@ class Play{
                     }
                 }
             });
-
-            socket.on('disconnect', function(socket){
-                sockets.splice(sockets.indexOf(socket), 1);
-            });
         });
     }
 }
 
-module.exports = Play;
+module.exports = Roulette;

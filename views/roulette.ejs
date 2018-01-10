@@ -12,7 +12,7 @@
         <div id="roulette"><div class="winner"></div></div>
             <div class="columns">
                 <div class="column">
-                    <input class="input" id="amount" name="amount" type="text" value="0" v-model="amount">
+                    <input class="input" id="amount" name="amount" type="text" v-model="amount">
                 </div>
                 <div class="column">
                     <button type="button" class="button" id="x2"><span>X*2</span></button>
@@ -191,7 +191,7 @@
     watch:{
         timer(){
             let $roulette = $('#roulette');
-            if(app.timer>0){
+            if(app.timer>=  0){
                 app.activeBetting = true;
             } 
             else app.activeBetting = false;
@@ -234,9 +234,6 @@
 <style scoped>
     button{
         width:100%;
-    }
-    form{
-        width: 100%;
     }
 
     .timer{
