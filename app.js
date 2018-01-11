@@ -46,7 +46,7 @@ app.use(function(req,res,next){
 });
 
 //games
-RouletteController.Play();
+RouletteController.CountDown();
 DicesController.Play();
 
 //Routes

@@ -1,33 +1,34 @@
 const userDB = require('../model/user');
 const rouletteDB = require('../model/roulette');
 
+let rouletteID;
+let timer = 16;
+let timerMessage;
+
+let bets = [];
+let players = [];
+
+let winningNumber;
+let winningColor;
+
+let rouletteSaving;
+
+rouletteDB.find({}, function(err,data){
+    rouletteID = data.length;
+});
+
+let myRoulette = io.of('/my-roulette');
+
+myRoulette.on('connect', function (socket) {
+    socket.emit('getBets', {bets:bets});
+});
 
 class Roulette{
-    
     static roulettePage(req,res){
         res.render('roulette');
     }
 
-
-    static Play(){
-        let rouletteID;
-        rouletteDB.find({}, function(err,data){
-            rouletteID = data.length;
-        });
-
-        let timer = 16;
-        let timerMessage;
-
-        let bets = [];
-        let players = [];
-
-        let winningNumber;
-        let winningColor;
-
-        let rouletteSaving;
-
-        let sockets = [];
-
+    static CountDown(){
         function chooseNumber(){
             winningNumber = Math.floor(Math.random()*15);
 
@@ -36,9 +37,7 @@ class Roulette{
             else if(winningNumber > 7 && winningNumber < 15) winningColor = 'black';
             timerMessage = 'Rolling';
 
-            sockets.forEach(function(socket){
-                socket.emit('winningNumber', {winningNumber:winningNumber});
-            });
+            myRoulette.emit('winningNumber', {winningNumber:winningNumber});
 
         }
 
@@ -93,81 +92,77 @@ class Roulette{
                 if(timer == -10) EndOfTurn();
                 else if(timer == -5) timerMessage = 'Winning number: '+winningNumber;
                 else if(timer == 0) chooseNumber();
+                myRoulette.emit('sendData', {timer:timer, timerMessage:timerMessage});
             timer --;
         }
         Timer();
         setInterval(Timer,1000);
+    }
 
-        var myRoulette = io.of('/my-roulette');
+    static Play(req,res){
+        let choosenColor = req.body.choosenColor;
+        let amount = req.body.amount;
+        let user = req.user;
 
-        myRoulette.on('connect', function (socket) {
+    
 
-            function sendData(){
-                    myRoulette.emit('sendData', {timer:timer, timerMessage:timerMessage});
-            }
-            sendData();
-            setInterval(sendData,1000);
-
-            sockets.push(socket);
-            socket.emit('getBets', {bets:bets});
-
-            socket.on('bet', function(data){
-                if(timer>0 && data.amount>0){
-                    userDB.findOne({_id:user._id}, function(err,user){
-                        if(err) console.log(err);
-                        else if(user && user.balance>=data.amount){
-                            let newBet = {
-                                userID: user.id,
-                                username: user.username,
-                                amount: data.amount,
-                                choosenColor: data.choosenColor
-                            }
-                            bets.push(newBet);
-                            user.balance -= data.amount;
-                            user.save(function(err){
-                                if(err) console.log(err);
-                                else myRoulette.emit('sendBet', {newBet:newBet});
-                            });
-                        }
-                    });
-                    if(players.length > 0){
-                            if(players.filter(function(player){return player.username == user.username}).length > 0){
-                                players.forEach(function(player){
-                                        if(player.bets.filter(function(bet){return bet.choosenColor == data.choosenColor}).length > 0){
-                                            player.bets.forEach(function(bet){
-                                                if(bet.choosenColor == data.choosenColor) bet.amount += parseInt(data.amount);
-                                            });
-                                        }
-                                        else player.bets.push({
-                                            choosenColor:data.choosenColor,
-                                            amount: parseInt(data.amount)
-                                        });
-                                });
-                            }
-                            else{
-                                players.push({
-                                    id:user.id,
-                                    username:user.username,
-                                    bets:[{
-                                        choosenColor: data.choosenColor,
-                                        amount: parseInt(data.amount)
-                                    }]
-                                });
-                            }
+        if(timer>0 && amount>0){
+            userDB.findOne({_id:user._id}, function(err,user){
+                if(err) console.log(err);
+                else if(user && user.balance>=amount){
+                    let newBet = {
+                        username: user.username,
+                        amount: amount,
+                        choosenColor: choosenColor
                     }
-                    else {
+                    bets.push(newBet);
+                    user.balance -= amount;
+                    user.save(function(err){
+                        if(err) console.log(err);
+                        else myRoulette.emit('sendBet', {newBet:newBet});
+                    });
+                }
+            });
+            if(players.length > 0){
+                    if(players.filter(function(player){return player.username == user.username}).length > 0){
+                        players.forEach(function(player){
+                                if(player.bets.filter(function(bet){return bet.choosenColor == choosenColor}).length > 0){
+                                    player.bets.forEach(function(bet){
+                                        if(bet.choosenColor == choosenColor) bet.amount += parseInt(amount);
+                                    });
+                                }
+                                else player.bets.push({
+                                    choosenColor:choosenColor,
+                                    amount: parseInt(amount)
+                                });
+                        });
+                    }
+                    else{
                         players.push({
                             id:user.id,
                             username:user.username,
                             bets:[{
-                                choosenColor: data.choosenColor,
-                                amount: parseInt(data.amount)
+                                choosenColor: choosenColor,
+                                amount: parseInt(amount)
                             }]
                         });
                     }
-                }
-            });
-        });
+            }
+            else {
+                players.push({
+                    id:user.id,
+                    username:user.username,
+                    bets:[{
+                        choosenColor: choosenColor,
+                        amount: parseInt(amount)
+                    }]
+                });
+            }
+            res.json({username:req.user.username});
+        }
+        
+
+       
     }
 }
 

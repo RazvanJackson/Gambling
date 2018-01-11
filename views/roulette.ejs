@@ -43,31 +43,31 @@
                 <div class="column">
                     <button type="submit" name="bet-option" class="button is-success" value="green" :disabled="!activeBetting" @click="Bet($event)">Green</button>
                     <div class="active-players box">
-                            <div class="columns">
-                                <div class="column is-10 green-active-bets-username">
-                                    <div class="content">Total:</div>
-                                    <div class="content">Your bet:</div>
-                                </div>
-                                <div class="column green-active-bets-amount">
-                                    <div class="content">{{greenTotalBet}}</div>
-                                    <div class="content">{{greenYourBet}}</div>
-                                </div>
+                        <div class="columns">
+                            <div class="column is-10 green-active-bets-username">
+                                <div class="content">Total:</div>
+                                <div class="content">Your bet:</div>
                             </div>
+                            <div class="column green-active-bets-amount">
+                                <div class="content">{{greenTotalBet}}</div>
+                                <div class="content">{{greenYourBet}}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
                     <button type="submit" name="bet-option" class="button is-black" value="black" :disabled="!activeBetting"  @click="Bet($event)">Black</button>
                     <div class="active-players box">
-                            <div class="columns">
-                                <div class="column is-10 black-active-bets-username">
-                                    <div class="content">Total:</div>
-                                    <div class="content">Your bet:</div>
-                                </div>
-                                <div class="column black-active-bets-amount">
-                                    <div class="content">{{blackTotalBet}}</div>
-                                    <div class="content">{{blackYourBet}}</div>
-                                </div>
+                        <div class="columns">
+                            <div class="column is-10 black-active-bets-username">
+                                <div class="content">Total:</div>
+                                <div class="content">Your bet:</div>
                             </div>
+                            <div class="column black-active-bets-amount">
+                                <div class="content">{{blackTotalBet}}</div>
+                                <div class="content">{{blackYourBet}}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
         greenYourBet: 0,
         blackYourBet: 0,
 
-        bets: [],
+        bets: [],   
 
         winningNumber: undefined,
         activeBetting: undefined,
@@ -105,8 +105,9 @@
     methods:{
         Bet(event){
             let choosenColor = event.target.value;
+            
             if(app.timer>=0 && !isNaN(app.amount)){
-                myRoulette.emit('bet', {choosenColor: choosenColor, amount:app.amount});
+                $.post('http://localhost:3000/play/roulette',{choosenColor: choosenColor, amount:app.amount});
             }
         },
 
@@ -169,11 +170,11 @@
         },
 
         newBet(data){
-            $('.'+data.newBet.choosenColor+'-active-bets-username').append('<div class="active-bets-username">'+data.newBet.username+'</div>');
-            $('.'+data.newBet.choosenColor+'-active-bets-amount').append('<div class="active-bets-amount">'+data.newBet.amount+'</div>');
-            if(data.newBet.choosenColor == 'red')app.redTotalBet+=parseInt(data.newBet.amount);
-            else if(data.newBet.choosenColor == 'green')app.greenTotalBet+=parseInt(data.newBet.amount);
-            else if(data.newBet.choosenColor == 'black')app.blackTotalBet+=parseInt(data.newBet.amount);
+            $('.'+data.choosenColor+'-active-bets-username').append('<div class="active-bets-username">'+data.username+'</div>');
+            $('.'+data.choosenColor+'-active-bets-amount').append('<div class="active-bets-amount">'+data.amount+'</div>');
+            if(data.choosenColor == 'red')app.redTotalBet+=parseInt(data.amount);
+            else if(data.choosenColor == 'green')app.greenTotalBet+=parseInt(data.amount);
+            else if(data.choosenColor == 'black')app.blackTotalBet+=parseInt(data.amount);
         },
 
         onMountPlayers(){
@@ -201,22 +202,18 @@
     },
 
     mounted(){
-        let bets = this.bets;
-
         myRoulette.on('sendBet', function(data){
-            app.newBet(data);
-            if(bets.length==0) $('.active-players').show();
+            app.newBet({username:data.newBet.username, amount:data.newBet.amount, choosenColor: data.newBet.choosenColor});
         });
 
         myRoulette.on('getBets', function(data){
             app.bets = data.bets;
-            app.onMountPlayers()
+            app.onMountPlayers();
         });
 
         myRoulette.on('sendData', function(data){
             app.timer = data.timer;
             app.timerMessage = data.timerMessage;
-            app.bets = data.bets;
         });
 
         myRoulette.on('winningNumber', function(data){
