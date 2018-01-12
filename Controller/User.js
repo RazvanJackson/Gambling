@@ -1,4 +1,5 @@
 const SignupValidation = require('./SignupValidation');
+const UpdateValidation = require('./UpdateValidation');
 
 const passport = require('passport');
 
@@ -51,6 +52,28 @@ class User{
         if(email && username && password && confirmpassword){
             SignupValidation.checkAll(req,res);
         }
+    }
+
+    static updateVerification(req,res){
+        const email = req.body.email;
+        const password = req.body.password;
+        const confirmpassword = req.body.confirmpassword;
+
+        if(email){
+            UpdateValidation.emailValidation(req,res,function(){
+                return res;
+            });
+        }        
+       
+        else if(confirmpassword || password){
+            UpdateValidation.confirmPasswordValidation(req,res,function(){
+                return res;
+            });
+        }
+    }
+
+    static update(req,res){
+        UpdateValidation.checkAll(req,res);
     }
 }
 

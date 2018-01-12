@@ -11,15 +11,13 @@ span{
 
 /* NAVBAR */
 
-.navbar-user{
-    transition: 3s;
+.navbar-element{
     padding: 5px;
     color: white;
     background: linear-gradient(to right, #ffd700, #998100);
     border-radius: 5px;
 }
-.navbar-user:hover{
-    transition: 3s;
+.navbar-element:hover{
     padding: 5px;
     color: white;
     background: linear-gradient(to right, #998100, #ffd700);
@@ -65,14 +63,10 @@ span{
 }
 
 /* NAVBARS */
-.user-navbar{
-    margin: 0;
-}
+.navbar{
+    margin-bottom: 2vh;
 
-.play-navbar{
-    margin-bottom: 1rem;
 }
-
 /* INDEX */
 
 .title{

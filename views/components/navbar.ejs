@@ -1,14 +1,16 @@
 <nav class="navbar is-black user-navbar">
-    <div class="container">
+    <div class="container is-fluid">
         <!--Left side-->
         <div class="navbar-brand">
         
-            <a href="/" class="navbar-item"><span id="gambling-logo"></span></a>
+            <a href="/" class="navbar-item">
+                <span class="navbar-element">Home</span>
+            </a>
             
             <div class="navbar-burger burger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     
@@ -19,24 +21,32 @@
         <div class="navbar-menu">
             <!--Left part of the menu-->
             <div class="navbar-start">
-    
+                <a href="/play/roulette" class="navbar-item">
+                    <span id="navbar-roulette">Roulette</span>
+                </a>
+                <!--<a href="/play/versus" class="navbar-item">
+                    <span id="navbar-versus">Versus</span>
+                </a> -->
+                <a href="/play/dices" class="navbar-item">
+                    <span id="navbar-dices">Dices</span>
+                </a>
             </div>
             <!--End of Left part of the menu-->
-    
+            
             <!--Right part of the menu-->
             
             <div class="navbar-end">
             <% if(!user){ %> 
                 <a href="/user/login" class="navbar-item">
-                    <span class="navbar-user">Login</span>
+                    <span class="navbar-element">Login</span>
                 </a>
                 <a href="/user/signup" class="navbar-item">
-                    <span class="navbar-user">SignUp</span>
+                    <span class="navbar-element">SignUp</span>
                 </a>
             <% }else{ %>
-                <div class="navbar-item"><span class="navbar-user"><%=user.balance %></span></div>
+                <div class="navbar-item"><span class="navbar-element"><%=user.balance %></span></div>
                 <a href="/user/myaccount" class="navbar-item">
-                    <span class="navbar-user"><%=user.username %></span>
+                    <span class="navbar-element"><%=user.username %></span>
                 </a>
             <% } %>
             </div>

@@ -16,5 +16,7 @@ router.post('/login', express.urlencoded({extended:false}), passport.authenticat
 
 router.get('/logout', UserController.logout);
 router.post('/signup', express.urlencoded({extended:false}), UserController.signupForm);
+router.post('/update-validation', express.urlencoded({extended:false}), UserController.updateVerification);
+router.post('/update', express.urlencoded({extended:false}), UserController.update);
 
 module.exports = router;
