@@ -20,7 +20,7 @@ global.io = require('socket.io')(server);
 // Require routers
 const indexRouter = require('./routes/index');
 const RouletteController = require('./Controller/Roulette');
-const DicesController = require('./Controller/Dices');
+const DiceController = require('./Controller/Dice');
 
 
 // Local-login
@@ -47,7 +47,7 @@ app.use(function(req,res,next){
 
 //games
 RouletteController.CountDown();
-DicesController.Play();
+DiceController.Play();
 
 //Routes
 app.use('/', indexRouter);

@@ -20,8 +20,11 @@ passport.use('local-login',new LocalStrategy(
     UserDB.findOne({ username: usernameRegExp }, function (err, user) {
         if (err) return done(err);
         if (!user) return done(null, false); 
-        if (user.password != password) return done(null, false);
-            return done(null, user);
+        UserDB.comparePasswords(password, user.password, function(err,isMatch){
+            if(err) return done(err);
+            if(!isMatch) return done(null,false);
+            else return done(null, user);
+        })
     });
     }
 ));

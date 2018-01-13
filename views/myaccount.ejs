@@ -5,7 +5,7 @@
 <div class="columns">
     <div class="column" id="update-app">
         <div class="box">
-            <div class="title">User</div>
+            <div class="title">Update user</div>
         </div>
         <div class="box">
             <!-- Email field-->
@@ -35,55 +35,64 @@
                 <p class="help is-danger confirmpassword-help" v-if="helpConfirmPassword != 'null'">{{helpConfirmPassword}}</p>
             </div>
 
-            <!-- SignUp button field-->
+            <!-- Update button field-->
             <div class="field">
-                <button class="button signup-button" type="submit" @click.self.prevent="update()">Update</button>
+                <button class="button is-primary" type="submit" @click.self.prevent="update()">Update</button>
             </div>
         </div>
+        <div class="submit-message">{{helpSubmit}}</div>
     </div>
     <div class="column">
         <div class="box">
                 <div class="title">History</div>
         </div>
 
-        <div class="box history-games-list">
-            <div class="columns history-columns">
-                <div class="column" id="history-roulette">
-                    <div class="history-games">Roulette</div>
-                </div>
-                <div class="column" id="history-dices">
-                    <div class="history-games">Dices</div>
-                </div>
-                <div class="column" id="history-versus">
-                    <div class="history-games">Versus</div>
+        <div id="history-app">
+            <div class="box history-games-list" >
+                <div class="columns history-columns">
+                    <div class="column">
+                        <button class="button history-button is-dark" name="current-history" @click.self.prevent = "getHistory(event)">Roulette</button> 
+                    </div>
+                    <div class="column">
+                        <button class="button history-button is-dark" name="current-history" @click.self.prevent = "getHistory(event)">Dice</button> 
+                    </div>
+                    <div class="column">
+                        <button class="button history-button is-dark" name="current-history" @click.self.prevent = "getHistory(event)">Versus</button> 
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="box">
-            <div class="columns">
-               <div class="column">
-                    Game ID
-               </div>
-               <div class="column">
-                    Option
-                </div>
-                <div class="column">
-                    Amount
-                </div>
-                <div class="column">
-                    Winning Color
-                </div>
-                <div class="column">
-                    Result
-                </div>
+            <div class="box">
+                <div></div>
+                <div id="history-message" v-if="currentHistory == null ">Click one of the above games to see your gambling history!</div>
+                <table class="table history-table">
+                    <thead>
+                        <tr v-if="currentHistory == 'Roulette' ">
+                        <th>Game ID</th>
+                        <th>Player color</th>
+                        <th>Winning Color</th>
+                        <th>Win/Lose</th>
+                        </tr>
+
+                        <tr v-if="currentHistory == 'Dice' ">
+                        <th>Game ID</th>
+                        <th>Player color</th>
+                        <th>Winning Number</th>
+                        <th>Win/Lose</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const app = new Vue({
+    const update = new Vue({
     el: '#update-app',
     data: {
         email: undefined,
@@ -95,22 +104,20 @@
         helpConfirmPassword: undefined,
 
         helpSubmit: undefined,
-        
-        disableBtn: true
     },
     methods:{
         checkEmail(){
-            if(app.email == '') app.helpEmail = null;
+            if(update.email == '') update.helpEmail = null;
             else{
                 $.post('/user/update-validation',{
                     email:this.email
                 },function(data){
                     if(data.error == true){
-                        app.helpEmail = data.message;
+                        update.helpEmail = data.message;
                         $('.email-help').removeClass('is-primary').addClass('is-danger');
                     } 
                 else{
-                    app.helpEmail = data.message;
+                    update.helpEmail = data.message;
                     $('.email-help').removeClass('is-danger').addClass('is-primary');
                 } 
                 });
@@ -121,12 +128,12 @@
                 password: this.password
             },function(data){
                 if(data.error == true){
-                    app.helpPassword = data.message;
+                    update.helpPassword = data.message;
                     $('.password-help').removeClass('is-primary').addClass('is-danger');
 
                 } 
                 else{
-                    app.helpPassword = data.message;
+                    update.helpPassword = data.message;
                     $('.password-help').removeClass('is-danger').addClass('is-primary');
                 } 
              });
@@ -137,12 +144,12 @@
                 confirmpassword: this.confirmpassword
             },function(data){
                 if(data.error == true){
-                    app.helpConfirmPassword = data.message;
+                    update.helpConfirmPassword = data.message;
                     $('.confirmpassword-help').removeClass('is-primary').addClass('is-danger');
 
                 } 
                 else{
-                    app.helpConfirmPassword = data.message;
+                    update.helpConfirmPassword = data.message;
                     $('.confirmpassword-help').removeClass('is-danger').addClass('is-primary');
                 } 
              });
@@ -154,24 +161,126 @@
                 confirmpassword: this.confirmpassword
             },function(data){
                 if(data.error == true){
-                    app.helpSubmit = data.message;
+                    update.helpSubmit = data.message;
                 } 
                 else{
                     email = null,
                     password = null,
                     confirmpassword = null,
-                    app.helpSubmit = data.message;
+                    update.helpSubmit = data.message;
+                    setTimeout(function(){
+                        $('.submit-message').fadeOut();
+                    },5000);
                 } 
              });    
         },
     }
     });
+
+    const history = new Vue({
+        el: '#history-app',
+        data:{
+            currentHistory : null,
+        },
+        
+        methods:{
+            getHistory(event){
+                if(this.currentHistory != event.target.innerHTML){
+                    $('tbody').empty();
+                    this.currentHistory = event.target.innerHTML;
+                    $.post('/user/get-history', {history:this.currentHistory},function(data){
+                        if(history.currentHistory == 'Roulette'){
+                            data.forEach(function(game){
+                                game.players.forEach(function(player){
+                                    player.bets.forEach(function(bet){
+                                        let result;
+                                        let isWinner;
+                                        if(game.winningColor == bet.choosenColor){
+                                            if(bet.choosenColor == 'green') result = '+' + (bet.amount*14);
+                                            else result = '+' + (bet.amount*2);
+                                            isWinner = 'winner';
+                                        } 
+                                        else{
+                                            result = '-' + bet.amount;
+                                            isWinner = 'loser';
+                                        } 
+                                        $('tbody').append(`<tr class='${isWinner}'><th>${game.rouletteID}</th><th>${bet.choosenColor}</th><th>${game.winningColor}</th><th>${result}</th></tr>`);
+                                    })
+                                });
+                            });
+                        }
+                        else if(history.currentHistory == 'Dice'){
+                            data.forEach(function(bet){
+                                let isWinner;
+                                let result;
+                                if(bet.player.option == 'low' || bet.player.option == 'high'){
+                                    if(bet.player.option == 'low' && bet.winningNumber <= 3){
+                                        isWinner = 'winner';
+                                        result = '+' + (bet.player.amount*2);
+                                    }
+
+                                    else if(bet.player.option == 'high' && bet.winningNumber >= 4){
+                                        isWinner == 'winner';
+                                        result = '+' + (bet.player.amount*2);  
+                                    }
+                                    
+                                    else{
+                                        isWinner = 'loser'
+                                        result = '-' + bet.player.amount;
+                                    } 
+                                }
+                                else{
+                                    if(bet.player.option == bet.winningNumber){
+                                        isWinner == 'winner';
+                                        result = '+' + (bet.player.amount*5);  
+                                    }
+                                    else{
+                                        isWinner = 'loser'
+                                        result = '-' + bet.player.amount;
+                                    }
+                                }
+                                $('tbody').append(`<tr class='${isWinner}'><th>${bet.diceID}</th><th>${bet.player.option}</th><th>${bet.winningNumber}</th><th>${result}</th></tr>`);
+                            });
+                        }
+                    });
+                }
+                
+            },
+        }
+    });
+    
 </script>
 
 <style scoped>
 
-.history-games{
+.table tr{
+    border: 2.5px solid;
+}
+
+.table tbody th{
+    color: white;
+}
+
+.winner{
+    background-color: #23d160;
+}
+
+.loser{
+    background-color: #fe385f;
+}
+
+.history-button{
+    display: block;
+    margin: 0px auto;
+    width: 100%;
+}
+
+#history-message{
     text-align: center;
+}
+
+.table{
+    margin: 0px auto;
 }
 
 #history-roulette{
@@ -180,7 +289,7 @@
     color: white;
 }
 
-#history-dices{
+#history-dice{
     background-color:#60bc39;
     color: white;
 }

@@ -10,7 +10,7 @@
                 <div class="field">
                     <label class="label" for="username">Username</label>
                     <div class="control">
-                        <input class="input" type="text" name="username" v-model="username" @input="checkUsername()">
+                        <input class="input" type="text" name="username" v-model="username" @input="matchVerify()">
                     </div>
                 </div>
 
@@ -18,22 +18,40 @@
                 <div class="field">
                     <label class="label" for="password">Password</label>
                     <div class="control">
-                        <input class="input" type="password" name="password">
+                        <input class="input" type="password" name="password" v-model="password" @input="matchVerify()">
                     </div>
                 </div>
-
                 <!-- Login button field-->
                 <div class="field">
-                    <button class="button login-button" type="submit">Login</button>
+                    <button class="button is-primary" type="submit" :disabled='!disableBtn'>Login</button>
                 </div>
             </form>
-            
         </div>
     </div>
 </div>
 
 <script>
+    const app = new Vue({
+        el: '#login-app',
+        data:{
+            username : null,
+            password : null,
 
+            disableBtn: false
+        },
+        methods:{
+            matchVerify(){
+                $.post('/user/login-validation', {
+                    username:app.username,
+                    password:app.password
+                },function(data){
+                    console.log(data);
+                    if(data.error == false) app.disableBtn = true;
+                    else app.disableBtn = false;
+                });
+            },
+        }
+    });
 </script>
 
 <% include ./components/footer.ejs %>

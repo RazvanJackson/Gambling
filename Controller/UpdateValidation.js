@@ -83,7 +83,7 @@ class Validation{
                             user.email = email;
                             user.save(function(err){
                                 if(err) res.json({message:'System error!', error:true});
-                                res.json({message:'You have successfully signed up!', error:false});
+                                res.json({message:'You have succesfully updated your account!', error:false});
                             });
                         }
                     });
@@ -91,16 +91,18 @@ class Validation{
             });
         }
     
-        else if(password && confirmpassword){
+        if(password && confirmpassword){
             this.confirmPasswordValidation(req,null,function(data){
                 if(data==true){
                     UserDB.findOne({_id:req.user._id}, function(err,user){
                         if(err) res.json({message:'System error!', error:true});
                         else{
-                            user.password = password;
-                            user.save(function(err){
-                                if(err) res.json({message:'System error!', error:true});
-                                res.json({message:'You have successfully signed up!', error:false});
+                            UserDB.hashPassword(password, function(hash){
+                                user.password = hash;
+                                user.save(function(err){
+                                    if(err) res.json({message:'System error!', error:true});
+                                    res.json({message:'You have succesfully updated your account!', error:false});
+                                });
                             });
                         }
                     });

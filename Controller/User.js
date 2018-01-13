@@ -1,5 +1,9 @@
 const SignupValidation = require('./SignupValidation');
+const LoginValidation = require('./LoginValidation');
 const UpdateValidation = require('./UpdateValidation');
+const GamesHistory = require('./GamesHistory');
+
+const rouletteDB = require('../model/roulette');
 
 const passport = require('passport');
 
@@ -13,6 +17,7 @@ class User{
     }
 
     static myaccountPage(req,res){
+        
         res.render('myaccount');
     }
 
@@ -21,8 +26,8 @@ class User{
             res.redirect('/');
     }
 
-    static loginForm(req,res, next){
-        
+    static loginVerification(req,res){
+        LoginValidation.match(req,res);
     }
 
     static signupForm(req,res){
@@ -74,6 +79,27 @@ class User{
 
     static update(req,res){
         UpdateValidation.checkAll(req,res);
+    }
+
+    static getHistory(req,res){
+        let history = req.body.history;
+        let user = req.user;
+
+        if(history == 'Roulette'){
+            GamesHistory.rouletteHistory(user,function(data){
+                res.send(data);
+            });
+        } 
+        else if(history == 'Dice'){
+            GamesHistory.diceHistory(user,function(data){
+                res.send(data);
+            });
+        } 
+        else if(history == 'Versus'){
+            GamesHistory.versusHistory(user,function(data){
+                res.send(data);
+            });
+        } 
     }
 }
 

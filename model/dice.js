@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 var db = mongoose.createConnection('mongodb://admin:admin@ds249005.mlab.com:49005/gambling');
 
 
-const dicesSchema = mongoose.Schema({
-    dicesID:{
+const diceSchema = mongoose.Schema({
+    diceID:{
         type: Number,
         required: true
     },
@@ -25,5 +25,5 @@ const dicesSchema = mongoose.Schema({
     }
 });
 
-const Dices = db.model('dices', dicesSchema, 'dices');
-module.exports = Dices;
+const Dice = db.model('dice', diceSchema, 'dice');
+module.exports = Dice;

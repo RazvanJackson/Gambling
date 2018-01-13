@@ -1,10 +1,12 @@
-<nav class="navbar is-black user-navbar">
-    <div class="container is-fluid">
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script src="https://use.fontawesome.com/0f862e59ba.js"></script>
+
+<nav class="navbar is-dark user-navbar">
         <!--Left side-->
         <div class="navbar-brand">
         
-            <a href="/" class="navbar-item">
-                <span class="navbar-element">Home</span>
+            <a href="/" class="navbar-item navbar-element" >
+                <span>Home</span>
             </a>
             
             <div class="navbar-burger burger">
@@ -21,14 +23,14 @@
         <div class="navbar-menu">
             <!--Left part of the menu-->
             <div class="navbar-start">
-                <a href="/play/roulette" class="navbar-item">
-                    <span id="navbar-roulette">Roulette</span>
+                <a href="/play/roulette" class="navbar-item navbar-element">
+                    <span>Roulette</span>
                 </a>
                 <!--<a href="/play/versus" class="navbar-item">
                     <span id="navbar-versus">Versus</span>
                 </a> -->
-                <a href="/play/dices" class="navbar-item">
-                    <span id="navbar-dices">Dices</span>
+                <a href="/play/dice" class="navbar-item navbar-element">
+                    <span>Dice</span>
                 </a>
             </div>
             <!--End of Left part of the menu-->
@@ -37,21 +39,20 @@
             
             <div class="navbar-end">
             <% if(!user){ %> 
-                <a href="/user/login" class="navbar-item">
-                    <span class="navbar-element">Login</span>
+                <a href="/user/login" class="navbar-item navbar-element">
+                    <span>Login</span>
                 </a>
-                <a href="/user/signup" class="navbar-item">
-                    <span class="navbar-element">SignUp</span>
+                <a href="/user/signup" class="navbar-item navbar-element">
+                    <span>SignUp</span>
                 </a>
             <% }else{ %>
-                <div class="navbar-item"><span class="navbar-element"><%=user.balance %></span></div>
-                <a href="/user/myaccount" class="navbar-item">
-                    <span class="navbar-element"><%=user.username %></span>
+                <div class="navbar-item"><span><i class="fa fa-money" aria-hidden="true"></i> <%=user.balance %></span></div>
+                <a href="/user/myaccount" class="navbar-item navbar-element">
+                    <span><i class="fa fa-user" aria-hidden="true"></i>&nbsp;<%=user.username %></span>
                 </a>
             <% } %>
             </div>
             <!--End of Right part of the menu-->
         </div>
         <!--End of Right side-->
-    </div>
 </nav>

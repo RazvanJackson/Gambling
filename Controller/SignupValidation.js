@@ -84,16 +84,20 @@ class Validation{
                         if(data==true){
                             Validation.confirmPasswordValidation(req,null,function(data){
                                 if(data==true){
-                                    let newUser = new UserDB({
-                                        email:email,
-                                        username:username,
-                                        password:password,
-                                        balance: 0
+                                    UserDB.hashPassword(password, function(hash){
+                                        let hashPassword = hash
+                                        let newUser = new UserDB({
+                                            email:email,
+                                            username:username,
+                                            password:hashPassword,
+                                            balance: 0
+                                        });
+                                        newUser.save(function(err){
+                                            if(err) res.json({message:'System error!', error:true});
+                                            else res.json({message:'You have successfully signed up!', error:false});
+                                        });
                                     });
-                                    newUser.save(function(err){
-                                        if(err) res.json({message:'System error!', error:true});
-                                        res.json({message:'You have successfully signed up!', error:false});
-                                    });
+                                    
                                 }
                                 else{
                                     res.json({message:'All fields must be valide!', error:true});
