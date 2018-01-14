@@ -27,30 +27,30 @@
         </div>
             <div class="columns">
                 <div class="column">
-                    <button class="button is-link" value="1" @click="Bet($event)">1</button>
+                    <button class="button is-link" value="1" :disabled="!btnActive" @click="Bet(event)">1</button>
                 </div>
                 <div class="column">
-                    <button class="button is-link" value="2" @click="Bet($event)">2</button>
+                    <button class="button is-link" value="2" :disabled="!btnActive" @click="Bet(event)">2</button>
                 </div>
                 <div class="column">
-                    <button class="button is-link" value="3" @click="Bet($event)">3</button>
+                    <button class="button is-link" value="3" :disabled="!btnActive" @click="Bet(event)">3</button>
                 </div>
                 <div class="column">
-                    <button class="button is-danger"value="4" @click="Bet($event)">4</button>
+                    <button class="button is-danger"value="4" :disabled="!btnActive" @click="Bet(event)">4</button>
                 </div>
                 <div class="column">
-                    <button class="button is-danger" value="5" @click="Bet($event)">5</button>
+                    <button class="button is-danger" value="5" :disabled="!btnActive" @click="Bet(event)">5</button>
                 </div>
                 <div class="column">
-                    <button class="button is-danger" value="6" @click="Bet($event)">6</button>
+                    <button class="button is-danger" value="6" :disabled="!btnActive" @click="Bet(event)">6</button>
                 </div>
             </div>
             <div class="columns">
                 <div class="column">
-                    <button class="button is-link" value="low" @click="Bet($event)">Low [1 to 3]</button>
+                    <button class="button is-link" value="low" :disabled="!btnActive" @click="Bet(event)">Low [1 to 3]</button>
                 </div>
                 <div class="column">
-                    <button class="button is-danger" value="high" @click="Bet($event)">High [4 to 6]</button>
+                    <button class="button is-danger" value="high" :disabled="!btnActive" @click="Bet(event)">High [4 to 6]</button>
                 </div>
             </div>
         </div>
@@ -67,15 +67,18 @@
         data:{
             message: 'Waiting',
             amount: 0,
+            btnActive: true,
         },
         methods:{
             Bet(event){
                 myDice.emit('bet', {amount: app.amount,option: event.target.value});
+                this.btnActive = false;
             }
         },
         mounted(){
             myDice.on('message', function(message){
                 app.message = message;
+                app.btnActive = true;
             });
         }
     });

@@ -8,7 +8,7 @@ class GamesHistory{
             if(err) return callback({error:true, message:"System error"})
             else if(bets) return callback(bets);
             else if(!bets) return callback({error:false, message:"No bets"});
-        }).limit(25);
+        }).sort({'rouletteID': -1}).limit(25);
        
     }
     static diceHistory(user,callback){
@@ -17,7 +17,7 @@ class GamesHistory{
             if(err) return callback({error:true, message:"System error"})
             else if(bets) return callback(bets);
             else if(!bets) return callback({error:false, message:"No bets"});
-        }).limit(25);
+        }).sort({'diceID': -1}).limit(25);
     }
     static versusHistory(user,callback){
     }

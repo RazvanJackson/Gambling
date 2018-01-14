@@ -5,7 +5,7 @@
 <div class="columns">
     <div class="column" id="update-app">
         <div class="box">
-            <div class="title">Update user</div>
+            <div class="title is-4">Update user</div>
         </div>
         <div class="box">
             <!-- Email field-->
@@ -44,7 +44,7 @@
     </div>
     <div class="column">
         <div class="box">
-                <div class="title">History</div>
+                <div class="title is-4">History</div>
         </div>
 
         <div id="history-app">
@@ -196,8 +196,8 @@
                                         let result;
                                         let isWinner;
                                         if(game.winningColor == bet.choosenColor){
-                                            if(bet.choosenColor == 'green') result = '+' + (bet.amount*14);
-                                            else result = '+' + (bet.amount*2);
+                                            if(bet.choosenColor == 'green') result = '+' + (bet.amount*13);
+                                            else result = '+' + bet.amount;
                                             isWinner = 'winner';
                                         } 
                                         else{
@@ -216,12 +216,12 @@
                                 if(bet.player.option == 'low' || bet.player.option == 'high'){
                                     if(bet.player.option == 'low' && bet.winningNumber <= 3){
                                         isWinner = 'winner';
-                                        result = '+' + (bet.player.amount*2);
+                                        result = '+' + bet.player.amount;
                                     }
 
                                     else if(bet.player.option == 'high' && bet.winningNumber >= 4){
-                                        isWinner == 'winner';
-                                        result = '+' + (bet.player.amount*2);  
+                                        isWinner = 'winner';
+                                        result = '+' + bet.player.amount;  
                                     }
                                     
                                     else{
@@ -229,17 +229,16 @@
                                         result = '-' + bet.player.amount;
                                     } 
                                 }
-                                else{
-                                    if(bet.player.option == bet.winningNumber){
-                                        isWinner == 'winner';
-                                        result = '+' + (bet.player.amount*5);  
-                                    }
-                                    else{
-                                        isWinner = 'loser'
-                                        result = '-' + bet.player.amount;
-                                    }
+                                else if(bet.player.option == bet.winningNumber){
+                                    isWinner = 'winner';
+                                    result = '+' + (bet.player.amount*4);  
                                 }
-                                $('tbody').append(`<tr class='${isWinner}'><th>${bet.diceID}</th><th>${bet.player.option}</th><th>${bet.winningNumber}</th><th>${result}</th></tr>`);
+                                else{
+                                    isWinner = 'loser'
+                                    result = '-' + bet.player.amount;
+                                }
+                                
+                                $('tbody').append(`<tr class='${isWinner}'><td>${bet.diceID}</td><td>${bet.player.option}</td><td>${bet.winningNumber}</td><td>${result}</td></tr>`);
                             });
                         }
                     });
@@ -252,6 +251,9 @@
 </script>
 
 <style scoped>
+.table{
+    margin: 0px auto;
+}
 
 .table tr{
     border: 2.5px solid;
@@ -260,6 +262,11 @@
 .table tbody th{
     color: white;
 }
+.table tbody td{
+    color: white;
+    text-align: center;
+}
+
 
 .winner{
     background-color: #23d160;
@@ -277,10 +284,6 @@
 
 #history-message{
     text-align: center;
-}
-
-.table{
-    margin: 0px auto;
 }
 
 #history-roulette{

@@ -45,7 +45,6 @@
                     username:app.username,
                     password:app.password
                 },function(data){
-                    console.log(data);
                     if(data.error == false) app.disableBtn = true;
                     else app.disableBtn = false;
                 });
