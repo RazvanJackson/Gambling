@@ -3,8 +3,6 @@ const LoginValidation = require('./LoginValidation');
 const UpdateValidation = require('./UpdateValidation');
 const GamesHistory = require('./GamesHistory');
 
-const rouletteDB = require('../model/roulette');
-
 const passport = require('passport');
 
 class User{

@@ -85,3 +85,7 @@ span{
     border-color: transparent;
     color: #f5f5f5;
 }
+
+.force-is-dark *{
+    color: #f5f5f5;
+}

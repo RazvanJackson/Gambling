@@ -10,6 +10,7 @@ const app = express();
 
 //DBs
 const rouletteDB = require('./model/roulette');
+const diceDB = require('./model/dice');
 const userDB = require('./model/user');
 
 // Server
@@ -21,7 +22,6 @@ global.io = require('socket.io')(server);
 const indexRouter = require('./routes/index');
 const RouletteController = require('./Controller/Roulette');
 const DiceController = require('./Controller/Dice');
-
 
 // Local-login
 require("./passport-config/local");
@@ -38,16 +38,52 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 global.user;
-//Locals //
+//Locals
 app.use(function(req,res,next){
     app.locals.user = req.user;
     user = req.user;
     next();
 });
 
-//games
+//Games
 RouletteController.CountDown();
 DiceController.Play();
+
+//IO
+const indexDetails = io.of('/index-details');
+
+indexDetails.on('connect', function(socket){
+    let rouletteTotalPlayers = [];
+    let rouletteTotalWagered = 0;
+
+    let diceTotalPlayers = [];
+    let diceTotalWagered = 0;
+    
+    rouletteDB.find({}, function(err,games){
+        if(!err){
+            games.forEach(function(game){
+                game.players.forEach(function(player){
+                    if(!rouletteTotalPlayers.includes(player.username)) rouletteTotalPlayers.push(player.username);
+                    player.bets.forEach(function(bet){
+                        rouletteTotalWagered += bet.amount;
+                    })
+                });
+            });
+            socket.emit('sendRouletteData', {totalPlayers:rouletteTotalPlayers, totalWagered: rouletteTotalWagered});
+        }
+    });
+
+    diceDB.find({}, function(err,games){
+        if(!err){
+            games.forEach(function(game){
+                if(!diceTotalPlayers.includes(game.player.username)) diceTotalPlayers.push(game.player.username);
+                diceTotalWagered += parseInt(game.player.amount);
+            });
+        }
+        socket.emit('sendDiceData', {totalPlayers:diceTotalPlayers, totalWagered: diceTotalWagered});
+    });
+});
+
 
 //Routes
 app.use('/', indexRouter);

@@ -1,28 +1,84 @@
 <% include ./components/header.ejs %>
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
 <div class="container is-fluid">
-    <div class="columns">
+    <div class="columns" id="index-app">
         <div class="column">
-            <div class="box is-dark">
-                <div class="title is-4">Roulette</div>
+            <div class="box force-is-dark">
+                <h1 class="title is-4">Roulette</h1>
+                <div class="content">
+                    <li>Total players: {{rouletteTotalPlayers}}</li>
+                    <li>Total wagered: {{rouletteTotalWagered}}</li>
+                </div>
             </div>
         </div>
         <div class="column">
-            <div class="box">
-                <div class="title is-4">Dice</div>
+            <div class="box box force-is-dark">
+                <h1 class="title is-4">Dice</h1>
+                <div class="content">
+                    <li>Total players: {{diceTotalPlayers}}</li>
+                    <li>Total wagered: {{diceTotalWagered}}</li>
+                </div>
             </div>
         </div>
         <div class="column">
-            <div class="box">
-                <div class="title is-4">Versus</div>
+            <div class="box box force-is-dark">
+                <h1 class="title is-4">Versus</h1>
+                <div class="content">
+                    <li>Total players: {{}}</li>
+                    <li>Total wagered: {{}}</li>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
+<script>
+    $(document).ready(function(){
+        $('.box').on('mouseover', function(){
+            $(this).find('.content').css({display:'initial'});
+        })
+        $('.box').on('mouseleave', function(){
+            $(this).find('.content').css({display:'none'});
+        })
+    })
+
+    var indexDetails = io('http://localhost:3000/index-details', {forceNew: false});
+
+    const app = new Vue({
+        el:'#index-app',
+        data:{
+            rouletteTotalPlayers: undefined,
+            rouletteTotalWagered: undefined,
+
+            diceTotalPlayers: undefined,
+            diceTotalWagered: undefined,
+        },
+        methods:{
+        },
+        mounted(){
+            indexDetails.on('sendRouletteData', function(data){
+                console.log(data);
+                app.rouletteTotalPlayers = data.totalPlayers.length;
+                app.rouletteTotalWagered = data.totalWagered;
+            });
+
+            indexDetails.on('sendDiceData', function(data){
+                console.log(data);
+                app.diceTotalPlayers = data.totalPlayers.length;
+                app.diceTotalWagered = data.totalWagered;
+            });
+        }
+    });
+</script>
+
 <style scoped>
-.title{
-   
+.content{
+    display: none;
 }
 </style>
 
