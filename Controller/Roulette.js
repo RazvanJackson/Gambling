@@ -104,8 +104,6 @@ class Roulette{
         let amount = req.body.amount;
         let user = req.user;
 
-    
-
         if(timer>0 && amount>0){
             userDB.findOne({_id:user._id}, function(err,user){
                 if(err) console.log(err);

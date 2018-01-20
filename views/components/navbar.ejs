@@ -1,10 +1,11 @@
 <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://use.fontawesome.com/0f862e59ba.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
-<nav class="navbar is-dark user-navbar">
+<nav class="navbar is-dark user-navbar" id="navbar-app">
         <!--Left side-->
         <div class="navbar-brand">
-        
             <a href="/" class="navbar-item navbar-element" >
                 <span>Home</span>
             </a>
@@ -15,7 +16,6 @@
                 <span></span>
             </div>
         </div>
-    
         
         <!--End of Left side-->
     
@@ -38,21 +38,38 @@
             <!--Right part of the menu-->
             
             <div class="navbar-end">
-            <% if(!user){ %> 
-                <a href="/user/login" class="navbar-item navbar-element">
+                <a href="/user/login" class="navbar-item navbar-element" v-show="!user">
                     <span>Login</span>
                 </a>
-                <a href="/user/signup" class="navbar-item navbar-element">
+                <a href="/user/signup" class="navbar-item navbar-element" v-show="!user"> 
                     <span>SignUp</span>
                 </a>
-            <% }else{ %>
-                <div class="navbar-item"><span id="user-balance"><i class="fa fa-money" aria-hidden="true"></i> <%=user.balance %></span></div>
-                <a href="/user/myaccount" class="navbar-item navbar-element">
-                    <span><i class="fa fa-user" aria-hidden="true"></i>&nbsp;<%=user.username %></span>
+                <div class="navbar-item" v-show="user"><span id="user-balance"><i class="fa fa-money" aria-hidden="true"></i> </span></div>
+                <a href="/user/myaccount" class="navbar-item navbar-element" v-show="user">
+                    <span><i class="fa fa-user" aria-hidden="true"></i>&nbsp;</span>
                 </a>
-            <% } %>
             </div>
             <!--End of Right part of the menu-->
         </div>
         <!--End of Right side-->
 </nav>
+
+<script>
+    var userDetails = io('http://localhost:3000/user-details');
+
+    let userApp = new Vue({
+        el: '#navbar-app',
+        data:{
+            user:undefined
+        },
+        beforeCreated()
+        {   
+            
+        },
+        created(){
+            userDetails.on('sendUserDetails', function(data){
+                console.log(data);
+            })
+        }
+    });
+</script>

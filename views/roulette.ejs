@@ -8,7 +8,7 @@
         
     </div>
     <div class="column is-9 ">
-        <div class="timer">{{timerMessage}}</div>
+        <h1 class="timer title is-5">{{timerMessage}}</h1>
         <div id="roulette"><div class="winner"></div></div>
             <div class="columns">
                 <div class="column">
@@ -220,30 +220,31 @@
             app.winningNumber = data.winningNumber;
             app.Spin();
         });
-
-        // if(this.bets.length == 0) $('.active-players').hide();
-        
     },
 });
 
 </script>
 
 <style scoped>
-    .non-navbar {
-        height: 91vh;
-    }
 
-    button{
-        width:100%;
-    }
+background:after{
+    background-image: url('/roulette-background.jpg');
+    background-position: center;
+    background-size: cover;
+}
 
-    .timer{
-        text-align: center;
-        margin-bottom: 10px;
-    }
+button{
+    width:100%;
+}
 
-    .box{
-        margin-top: 10px;
-    }
+.timer{
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.box{
+    margin-top: 10px;
+}
 
 </style>

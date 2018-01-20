@@ -84,6 +84,8 @@ indexDetails.on('connect', function(socket){
     });
 });
 
+   
+
 
 //Routes
 app.use('/', indexRouter);

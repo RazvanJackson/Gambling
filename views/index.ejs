@@ -6,29 +6,29 @@
 <div class="container is-fluid">
     <div class="columns" id="index-app">
         <div class="column">
-            <div class="box force-is-dark">
-                <h1 class="title is-4">Roulette</h1>
+            <div class="info-box">
+                <h1 class="title game-title is-3">Roulette</h1>
                 <div class="content">
-                    <li>Total players: {{rouletteTotalPlayers}}</li>
-                    <li>Total wagered: {{rouletteTotalWagered}}</li>
+                    <h1 class="title info-title is-5">Total players: {{rouletteTotalPlayers}}</h1>
+                    <h1 class="title info-title is-5">Total wagered: {{rouletteTotalWagered}}</h1>
                 </div>
             </div>
         </div>
         <div class="column">
-            <div class="box box force-is-dark">
-                <h1 class="title is-4">Dice</h1>
+            <div class="info-box">
+                <h1 class="title game-title is-3">Dice</h1>
                 <div class="content">
-                    <li>Total players: {{diceTotalPlayers}}</li>
-                    <li>Total wagered: {{diceTotalWagered}}</li>
+                    <h1 class="title info-title is-5">Total players: {{diceTotalPlayers}}</h1>
+                    <h1 class="title info-title is-5">Total wagered: {{diceTotalWagered}}</h1>
                 </div>
             </div>
         </div>
         <div class="column">
-            <div class="box box force-is-dark">
-                <h1 class="title is-4">Versus</h1>
+            <div class="info-box">
+                <h1 class="title game-title is-3">Versus</h1>
                 <div class="content">
-                    <li>Total players: {{}}</li>
-                    <li>Total wagered: {{}}</li>
+                    <h1 class="title info-title is-5">Total players: </h1>
+                    <h1 class="title info-title is-5">Total wagered: </h1>
                 </div>
             </div>
         </div>
@@ -38,15 +38,6 @@
 
 
 <script>
-    $(document).ready(function(){
-        $('.box').on('mouseover', function(){
-            $(this).find('.content').css({display:'initial'});
-        })
-        $('.box').on('mouseleave', function(){
-            $(this).find('.content').css({display:'none'});
-        })
-    })
-
     var indexDetails = io('http://localhost:3000/index-details', {forceNew: false});
 
     const app = new Vue({
@@ -62,13 +53,11 @@
         },
         mounted(){
             indexDetails.on('sendRouletteData', function(data){
-                console.log(data);
                 app.rouletteTotalPlayers = data.totalPlayers.length;
                 app.rouletteTotalWagered = data.totalWagered;
             });
 
             indexDetails.on('sendDiceData', function(data){
-                console.log(data);
                 app.diceTotalPlayers = data.totalPlayers.length;
                 app.diceTotalWagered = data.totalWagered;
             });
@@ -77,9 +66,28 @@
 </script>
 
 <style scoped>
-.content{
-    display: none;
+.game-title{
+    text-align: center;
+    width: 100%;
+    padding: 20px 0px;
+    color: white;
+    background-color: #363636;
 }
+
+.info-box{
+    color: white;
+    background-color: #5e5e5e;
+}
+
+.content .info-title{
+    margin: 0px 10px;
+    color: white;
+}
+
+.info-title:last-child{
+    padding-bottom: 20px;
+}
+
 </style>
 
 <% include ./components/footer.ejs %>
