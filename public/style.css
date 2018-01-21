@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald|Quattrocento');
 
 html, body{
-    min-height: 100%;
-    height: 100%;
+    min-height: calc(100vh-3.25rem) !important;
     width: 100%;
 }
 
@@ -16,10 +15,6 @@ span{
 }
 
 /* NAVBAR */
-.navbar{
-    margin-bottom: 2vh;
-}
-
 .navbar-element{
     color: white;
 }

@@ -233,18 +233,26 @@
 
 <style scoped>
 
-#background:after{
+#background {
+    display: block;
+    position: relative;
+    min-height: calc(100vh - 3.25rem);
+    margin: 0px;
+}
+
+#background::after {
     content: "";
     z-index: -1;
-    top: 0px;
-    bottom: 0px;
     position: absolute;
-    background-image: url('/roulette-background.jpg');
+    background-image: url('/theme-background.jpg');
+    background-repeat: repeat;
     background-position: center;
     background-size: cover;
-    width: 100%;
-    height: 100%;
     opacity: .85;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 button{
