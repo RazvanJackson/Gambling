@@ -55,7 +55,13 @@
 </nav>
 
 <script>
-    var userDetails = io('http://localhost:3000/user-details');
+    var protocol = window.location.protocol;
+    var host = window.location.hostname;
+    var port = window.location.port; 
+    var IOName = 'my-dice';
+    
+    var url = `${protocol}//${host}:${port}/${IOName}`;
+    var userDetails = io(url);
 
     let userApp = new Vue({
         el: '#navbar-app',

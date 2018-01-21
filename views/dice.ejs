@@ -59,7 +59,13 @@
 <% include ./components/footer.ejs %>
 
 <script>
-    var myDice = io('http://localhost:3000/my-dice', {forceNew: false});
+    var protocol = window.location.protocol;
+    var host = window.location.hostname;
+    var port = window.location.port; 
+    var IOName = 'my-dice';
+    
+    var url = `${protocol}//${host}:${port}/${IOName}`;
+    var myDice = io(url);
 
     const app = new Vue({
         el: '#dice-app',

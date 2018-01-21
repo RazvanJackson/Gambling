@@ -77,7 +77,13 @@
 
 <% include ./components/footer.ejs %>
 <script>
-    var myRoulette = io('http://localhost:3000/my-roulette', {forceNew: false});
+    var protocol = window.location.protocol;
+    var host = window.location.hostname;
+    var port = window.location.port; 
+    var IOName = 'my-roulette';
+    
+    var url = `${protocol}//${host}:${port}/${IOName}`;
+    var myRoulette = io(url);
 
     const app = new Vue({
     el: '#roulette-app',
@@ -107,7 +113,7 @@
             let choosenColor = event.target.value;
             
             if(app.timer>=0 && !isNaN(app.amount) && app.amount > 0){
-                $.post('http://localhost:3000/play/roulette',{choosenColor: choosenColor, amount:app.amount});
+                $.post('/play/roulette',{choosenColor: choosenColor, amount:app.amount});
             }
         },
 
