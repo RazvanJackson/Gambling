@@ -7,7 +7,7 @@
         <!--Left side-->
         <div class="navbar-brand">
             <a href="/" class="navbar-item navbar-element" >
-                <span>Home</span>
+                <span><i class="fa fa-home" aria-hidden="true"></i>&nbsp Home</span>
             </a>
             
             <div class="navbar-burger burger">
@@ -24,13 +24,13 @@
             <!--Left part of the menu-->
             <div class="navbar-start">
                 <a href="/play/roulette" class="navbar-item navbar-element">
-                    <span>Roulette</span>
+                    <span><i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp Roulette</span>
                 </a>
                 <!--<a href="/play/versus" class="navbar-item">
                     <span id="navbar-versus">Versus</span>
                 </a> -->
                 <a href="/play/dice" class="navbar-item navbar-element">
-                    <span>Dice</span>
+                    <span><i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp Dice</span>
                 </a>
             </div>
             <!--End of Left part of the menu-->
@@ -39,10 +39,10 @@
             
             <div class="navbar-end">
                 <a href="/user/login" class="navbar-item navbar-element" v-show="!user">
-                    <span>Login</span>
+                    <span><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp Login</span>
                 </a>
                 <a href="/user/signup" class="navbar-item navbar-element" v-show="!user"> 
-                    <span>SignUp</span>
+                    <span><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp SignUp</span>
                 </a>
                 <div class="navbar-item" v-show="user"><span id="user-balance"><i class="fa fa-money" aria-hidden="true"></i> </span></div>
                 <a href="/user/myaccount" class="navbar-item navbar-element" v-show="user">

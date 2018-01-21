@@ -9,7 +9,7 @@
             <div class="info-box">
                 <h1 class="title game-title is-3">Roulette</h1>
                 <div class="content">
-                    <h1 class="title info-title is-5">Total players: {{rouletteTotalPlayers}}</h1>
+                    <h1 class="title info-title is-5">Unique players: {{rouletteTotalPlayers}}</h1>
                     <h1 class="title info-title is-5">Total wagered: {{rouletteTotalWagered}}</h1>
                 </div>
             </div>
@@ -18,7 +18,7 @@
             <div class="info-box">
                 <h1 class="title game-title is-3">Dice</h1>
                 <div class="content">
-                    <h1 class="title info-title is-5">Total players: {{diceTotalPlayers}}</h1>
+                    <h1 class="title info-title is-5">Unique players: {{diceTotalPlayers}}</h1>
                     <h1 class="title info-title is-5">Total wagered: {{diceTotalWagered}}</h1>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="info-box">
                 <h1 class="title game-title is-3">Versus</h1>
                 <div class="content">
-                    <h1 class="title info-title is-5">Total players: </h1>
+                    <h1 class="title info-title is-5">Unique players: </h1>
                     <h1 class="title info-title is-5">Total wagered: </h1>
                 </div>
             </div>
@@ -66,12 +66,35 @@
 </script>
 
 <style scoped>
+#background:after{
+    content: "";
+    z-index: -1;
+    top: 0px;
+    bottom: 0px;
+    position: absolute;
+    background-image: url('/theme-background.jpg');
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    opacity: .85;
+}
+
+.columns{
+    margin-top: 20px;
+}
+
 .game-title{
     text-align: center;
     width: 100%;
     padding: 20px 0px;
     color: white;
     background-color: #363636;
+}
+
+.game-title:hover{
+    background-color: #292929;
+    box-shadow: 0px -4px 0px #f98009 inset
 }
 
 .info-box{
@@ -87,6 +110,7 @@
 .info-title:last-child{
     padding-bottom: 20px;
 }
+
 
 </style>
 

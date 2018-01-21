@@ -7,7 +7,7 @@
     <div class="column">
         
     </div>
-    <div class="column is-9 ">
+    <div class="column is-9 play-box">
         <h1 class="timer title is-5">{{timerMessage}}</h1>
         <div id="roulette"><div class="winner"></div></div>
             <div class="columns">
@@ -227,10 +227,18 @@
 
 <style scoped>
 
-background:after{
+#background:after{
+    content: "";
+    z-index: -1;
+    top: 0px;
+    bottom: 0px;
+    position: absolute;
     background-image: url('/roulette-background.jpg');
     background-position: center;
     background-size: cover;
+    width: 100%;
+    height: 100%;
+    opacity: .85;
 }
 
 button{

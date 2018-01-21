@@ -9,8 +9,7 @@
     </div>
 
     <div class="column is-9">
-        <div>{{message}}</div>
-        <div id="dice-box"><span id="roll-dice"> &#9856;</span></div>
+        <h1 class="title is-5 message ">{{message}}</h1>
         <div class="columns">
             <div class="column">
                 <input class="input" id="amount" name="amount" type="text" v-model="amount">
@@ -86,18 +85,38 @@
 
 
 <style scoped>
+#background:after{
+content: "";
+z-index: -1;
+top: 0px;
+bottom: 0px;
+position: absolute;
+background-image: url('/dice-background.jpg');
+background-position: center;
+background-size: cover;
+width: 100%;
+height: 100%;
+opacity: .85;
+}
 
-    .box{
-        margin-top: 10px;
-    }
+.box{
+    margin-top: 10px;
+}
 
-    .button{
-        color: white;
-        width:100%;
-    }
+.button{
+    color: white;
+    width:100%;
+}
 
-    .button:hover{
-        color: white;
-    }
+.button:hover{
+    color: white;
+}
+
+.message{
+    background: initial;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
 </style>
