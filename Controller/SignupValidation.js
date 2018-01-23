@@ -90,7 +90,7 @@ class Validation{
                                             email:email,
                                             username:username,
                                             password:hashPassword,
-                                            balance: 0
+                                            balance: 100
                                         });
                                         newUser.save(function(err){
                                             if(err) res.json({message:'System error!', error:true});

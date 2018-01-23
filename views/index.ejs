@@ -1,7 +1,4 @@
 <% include ./components/header.ejs %>
-<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
 <div class="container is-fluid">
     <div class="columns" id="index-app">
@@ -38,7 +35,13 @@
 
 
 <script>
-    var indexDetails = io('http://localhost:3000/index-details', {forceNew: false});
+    var protocol = window.location.protocol;
+    var host = window.location.hostname;
+    var port = window.location.port; 
+    var IOName = 'index-details';
+    
+    var url = `${protocol}//${host}:${port}/${IOName}`;
+    var indexIO = io(url);
 
     const app = new Vue({
         el:'#index-app',
@@ -52,12 +55,12 @@
         methods:{
         },
         mounted(){
-            indexDetails.on('sendRouletteData', function(data){
+            indexIO.on('sendRouletteData', function(data){
                 app.rouletteTotalPlayers = data.totalPlayers.length;
                 app.rouletteTotalWagered = data.totalWagered;
             });
 
-            indexDetails.on('sendDiceData', function(data){
+            indexIO.on('sendDiceData', function(data){
                 app.diceTotalPlayers = data.totalPlayers.length;
                 app.diceTotalWagered = data.totalWagered;
             });
@@ -66,9 +69,14 @@
 </script>
 
 <style scoped>
+#background {
+    display: block;
+    min-height: calc(100vh - 3.25rem);
+    margin: 0px;
+}
 #background:after{
     content: "";
-    z-index: -1;
+    z-index: -786;
     top: 0px;
     bottom: 0px;
     position: absolute;
@@ -81,7 +89,7 @@
 }
 
 .columns{
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .game-title{

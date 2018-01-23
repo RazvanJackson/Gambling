@@ -13,7 +13,8 @@ const app = express();
 var server = app.listen(3000);
 // Socket.io
 global.io = require('socket.io')(server);
-require('./Controller/Sockets');
+var userIO = require('./Controller/UserSocket');
+require('./Controller/Sockets')();
 
 // Local-login
 require("./passport-config/local");
@@ -36,6 +37,9 @@ app.use(passport.session());
 //Locals
 app.use(function(req,res,next){
     app.locals.user = req.user;
+
+    userIO(req.user);
+    
     next();
 });
 

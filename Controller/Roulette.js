@@ -42,12 +42,11 @@ class Roulette{
         }
 
         function clearData(){
-            timer = 15;
+            timer = 16;
             bets = [];
         }
 
         function EndOfTurn(){
-
             rouletteSaving = new rouletteDB({
                 rouletteID: rouletteID,
                 players: players,
@@ -104,59 +103,79 @@ class Roulette{
         let amount = req.body.amount;
         let user = req.user;
 
-        if(timer>0 && amount>0){
-            userDB.findOne({_id:user._id}, function(err,user){
-                if(err) console.log(err);
-                else if(user && user.balance>=amount){
-                    let newBet = {
-                        username: user.username,
-                        amount: amount,
-                        choosenColor: choosenColor
-                    }
-                    bets.push(newBet);
-                    user.balance -= amount;
-                    user.save(function(err){
-                        if(err) console.log(err);
-                        else myRoulette.emit('sendBet', {newBet:newBet});
-                    });
-                }
-            });
-            if(players.length > 0){
-                    if(players.filter(function(player){return player.username == user.username}).length > 0){
-                        players.forEach(function(player){
-                                if(player.bets.filter(function(bet){return bet.choosenColor == choosenColor}).length > 0){
-                                    player.bets.forEach(function(bet){
-                                        if(bet.choosenColor == choosenColor) bet.amount += parseInt(amount);
+        if(timer>0){
+            if(amount <= 0) res.json({error:true, message:"Minimum amount is 1!"});
+            else{
+                userDB.findOne({_id:user._id}, function(err,user){
+                    if(err) res.json({error:true, message:"System error"});
+                    if(user){
+                        if(amount > user.balance) res.json({error:true, message:"You don't have enough money!",});
+                        else{
+                            let newBet = {
+                                username: user.username,
+                                amount: amount,
+                                choosenColor: choosenColor
+                            }
+                            bets.push(newBet);
+                            user.balance -= amount;
+                            user.save(function(err){
+                                if(err) res.json({error:true, message:"System error!"});
+                                else{
+                                    myRoulette.emit('sendBet', {newBet:newBet});
+                                    
+                                    res.json({error:false, message:"Your bet has been placed!", amount:amount});
+                                } 
+                            });
+
+                            if(players.length > 0){
+                                if(players.filter(function(player){return player.username == user.username}).length > 0){
+                                    players.forEach(function(player){
+                                            player.totalBet += parseInt(amount);
+                                            if(player.bets.filter(function(bet){return bet.choosenColor == choosenColor}).length > 0){
+                                                player.bets.forEach(function(bet){
+                                                    if(bet.choosenColor == choosenColor) bet.amount += parseInt(amount);
+                                                });
+                                            }
+                                            else player.bets.push({
+                                                choosenColor:choosenColor,
+                                                amount: parseInt(amount)
+                                            });
                                     });
                                 }
-                                else player.bets.push({
-                                    choosenColor:choosenColor,
-                                    amount: parseInt(amount)
+                                else{
+                                    players.push({
+                                        id:user.id,
+                                        username:user.username,
+                                        totalBet:0,
+                                        bets:[{
+                                            choosenColor: choosenColor,
+                                            amount: parseInt(amount)
+                                        }]
+                                    });
+                                }
+                            }
+                            else {
+                                players.push({
+                                    id:user.id,
+                                    username:user.username,
+                                    totalBet:0,
+                                    bets:[{
+                                        choosenColor: choosenColor,
+                                        amount: parseInt(amount)
+                                    }]
                                 });
-                        });
+                            }
+                            }
                     }
                     else{
-                        players.push({
-                            id:user.id,
-                            username:user.username,
-                            bets:[{
-                                choosenColor: choosenColor,
-                                amount: parseInt(amount)
-                            }]
-                        });
+                        res.json({error:true, message:"You're not logged in!"});
                     }
-            }
-            else {
-                players.push({
-                    id:user.id,
-                    username:user.username,
-                    bets:[{
-                        choosenColor: choosenColor,
-                        amount: parseInt(amount)
-                    }]
                 });
             }
-            res.json({username:req.user.username});
+            
+        }
+        else{
+            res.json({error:true, message:"You can't bet now"});
         }
         
 

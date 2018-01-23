@@ -38,15 +38,20 @@
             <!--Right part of the menu-->
             
             <div class="navbar-end">
-                <a href="/user/login" class="navbar-item navbar-element" v-show="!user">
+                <a href="/user/login" class="navbar-item navbar-element" v-if="!user">
                     <span><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp Login</span>
                 </a>
-                <a href="/user/signup" class="navbar-item navbar-element" v-show="!user"> 
+                <a href="/user/signup" class="navbar-item navbar-element" v-if="!user"> 
                     <span><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp SignUp</span>
                 </a>
-                <div class="navbar-item" v-show="user"><span id="user-balance"><i class="fa fa-money" aria-hidden="true"></i> </span></div>
-                <a href="/user/myaccount" class="navbar-item navbar-element" v-show="user">
-                    <span><i class="fa fa-user" aria-hidden="true"></i>&nbsp;</span>
+                <div class="navbar-item" v-if="user">
+                    <span id="user-balance"><i class="fa fa-money" aria-hidden="true"></i> {{user.balance}}</span>
+                </div>
+                <a href="/user/myaccount" class="navbar-item navbar-element" v-if="user">
+                    <span><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{{user.username}}</span>
+                </a>
+                <a href="/user/logout" class="navbar-item navbar-element" v-if="user">
+                    <span><i class="fa fa-sign-in" aria-hidden="true"></i></i>&nbsp;Logout</span>
                 </a>
             </div>
             <!--End of Right part of the menu-->
@@ -58,23 +63,19 @@
     var protocol = window.location.protocol;
     var host = window.location.hostname;
     var port = window.location.port; 
-    var IOName = 'user';
+    var IOName = 'user-details';
     
     var url = `${protocol}//${host}:${port}/${IOName}`;
-    var userDetails = io(url);
+    var userIO = io(url);
 
     let userApp = new Vue({
         el: '#navbar-app',
         data:{
             user:undefined
         },
-        beforeCreated()
-        {   
-            
-        },
         created(){
-            userDetails.on('sendUserDetails', function(data){
-                console.log(data);
+            userIO.on('sendPlayer', function(data){
+                userApp.user = data;
             })
         }
     });

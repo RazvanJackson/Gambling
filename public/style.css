@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald|Quattrocento');
 
 html, body{
-    min-height: calc(100vh-3.25rem) !important;
+    height: 100%;
     width: 100%;
 }
 
@@ -15,6 +15,10 @@ span{
 }
 
 /* NAVBAR */
+.navbar{
+    margin-bottom: 1.5vh;
+}
+
 .navbar-element{
     color: white;
 }
@@ -73,6 +77,31 @@ span{
     100% {background-position:var(--spin) 0%}
 }
 
+/* FOOTER */
+
+.footer{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    background-color: #363636;
+    padding: 1rem;
+}
+
+.copyright-title{
+    text-align: center;
+    color: #f5f5f5;
+}
+
+/* NOTIFICATION */
+
+.notification{
+    display: none;
+    width: 50%;
+    position: relative;
+    margin: 0px auto;
+    text-align: center;
+}
+
 /* COLORS */
 
 .force-is-dark{
@@ -84,3 +113,4 @@ span{
 .force-is-dark *{
     color: #f5f5f5;
 }
+

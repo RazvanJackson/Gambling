@@ -1,13 +1,12 @@
 <% include ./components/header.ejs %>
-<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
 <div class="columns" id="roulette-app">
     <div class="column">
         
     </div>
     <div class="column is-9 play-box">
+        
+
         <h1 class="timer title is-5">{{timerMessage}}</h1>
         <div id="roulette"><div class="winner"></div></div>
             <div class="columns">
@@ -23,6 +22,10 @@
                 <div class="column">
                     <button type="button" class="button is-dark" id="clear"><span>Clear</span></button>
                 </div>
+            </div>
+            <div class="notification is-success">
+                <button class="delete"></button>
+                <p>{{message}}</p>
             </div>
             <div class="columns">
                 <div class="column">
@@ -85,11 +88,19 @@
     var url = `${protocol}//${host}:${port}/${IOName}`;
     var myRoulette = io(url);
 
+    $(document).ready(function(){
+        $('button.delete').on('click',function(){
+            $(this).parent().fadeOut(500);
+        });
+    });
+
     const app = new Vue({
     el: '#roulette-app',
     data:{
         timerMessage:null,
         timer: null,
+
+        message: null,
 
         amount:0,
 
@@ -113,7 +124,27 @@
             let choosenColor = event.target.value;
             
             if(app.timer>=0 && !isNaN(app.amount) && app.amount > 0){
-                $.post('/play/roulette',{choosenColor: choosenColor, amount:app.amount});
+                $.post('/play/roulette',{choosenColor: choosenColor, amount:app.amount}, function(data){
+                    console.log(data.error);
+                    if(data.error == false){
+                        userApp.user.balance -=data.amount;
+                        $('.notification').css({display:'inherit'});
+                        $('.notification').remove('is-danger');
+                        $('.notification').addClass('is-success');
+                        setTimeout(function(){
+                             $('.notification').fadeOut(1000); 
+                        },5000);
+                    }
+                    else if(data.error == true){
+                        $('.notification').css({display:'inherit'});
+                        $('.notification').remove('is-success');
+                        $('.notification').addClass('is-danger');
+                        setTimeout(function(){
+                             $('.notification').fadeOut(1000); 
+                        },5000);
+                    }
+                    app.message = data.message;
+                });
             }
         },
 
@@ -198,7 +229,7 @@
     watch:{
         timer(){
             let $roulette = $('#roulette');
-            if(app.timer>=  0){
+            if(app.timer> 0){
                 app.activeBetting = true;
             } 
             else app.activeBetting = false;
@@ -242,9 +273,9 @@
 
 #background::after {
     content: "";
-    z-index: -1;
+    z-index: -786;
     position: absolute;
-    background-image: url('/theme-background.jpg');
+    background-image: url('/roulette-background.jpg');
     background-repeat: repeat;
     background-position: center;
     background-size: cover;
@@ -268,5 +299,6 @@ button{
 .box{
     margin-top: 10px;
 }
+
 
 </style>

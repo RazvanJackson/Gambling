@@ -36,13 +36,5 @@ module.exports = function(){
         }
         socket.emit('sendDiceData', {totalPlayers:diceTotalPlayers, totalWagered: diceTotalWagered});
     });
-
-    // Socket IO for navbar
-
-    const userIO = io.of('user');
-    
-    userIO.on('connect',function(socket){
-
-    });
 });
 }
